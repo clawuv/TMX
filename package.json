@@ -16,7 +16,7 @@
     "test": "vitest run",
     "test:e2e": "pnpm pretest && playwright test",
     "typecheck": "tsc --noEmit",
-    "rebuild:natives": "electron-rebuild -f -w node-pty,better-sqlite3"
+    "rebuild:natives": "electron-rebuild -f --only node-pty,better-sqlite3"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",
