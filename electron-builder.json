@@ -53,7 +53,7 @@
   },
   "publish": {
     "provider": "github",
-    "owner": "he2dou",
+    "owner": "clawuv",
     "repo": "TMX",
     "releaseType": "release"
   }
