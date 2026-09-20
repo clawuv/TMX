@@ -31,6 +31,7 @@
     "onlyBuiltDependencies": [
       "better-sqlite3",
       "cpu-features",
+      "electron",
       "node-pty",
       "ssh2"
     ]
