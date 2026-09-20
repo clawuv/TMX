@@ -1,0 +1,316 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    font-weight: 400;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Full-height chain (not min-height:100vh, which can overflow the viewport
+     by a sub-pixel at fractional DPI and leave a gap / clip the bottom border). */
+  html {
+    min-width: 320px;
+    height: 100%;
+    background: #12141a;
+  }
+
+  body {
+    min-width: 320px;
+    height: 100%;
+    margin: 0;
+    background: #12141a;
+    color: #e2e8f0;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  #root {
+    height: 100%;
+    background: transparent;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+}
+
+@layer base {
+  .font-mono-term {
+    font-family: 'Cascadia Mono', 'Cascadia Code', 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-feature-settings: "calt" 1, "liga" 1, "zero" 1;
+  }
+}
+
+/* Desktop-app interaction feel: arrow cursor, no text selection outside inputs */
+@layer base {
+  body {
+    cursor: default;
+    overscroll-behavior: none;
+  }
+
+  button,
+  a,
+  [role='button'] {
+    cursor: default;
+  }
+
+  input,
+  textarea,
+  [contenteditable='true'] {
+    cursor: text;
+    user-select: text;
+    -webkit-user-select: text;
+  }
+}
+
+/* Unify keyboard focus across the app: drop the Chromium default ring and draw
+   a theme-accent ring only for keyboard navigation (:focus-visible). */
+@layer base {
+  :focus {
+    outline: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus-ring, rgba(56, 189, 248, 0.75));
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+/* Native window drag regions (frameless titlebar integration) */
+.app-region-drag {
+  -webkit-app-region: drag;
+}
+
+.app-region-no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* Soft depth separates the chrome without a high-contrast outline. */
+.soft-chrome {
+  --chrome-shadow: rgba(0, 0, 0, 0.18);
+  --chrome-highlight: rgba(255, 255, 255, 0.025);
+}
+
+.soft-chrome.theme-light {
+  --chrome-shadow: rgba(30, 41, 59, 0.08);
+  --chrome-highlight: rgba(255, 255, 255, 0.5);
+}
+
+.soft-chrome #titlebar-integrated-header {
+  box-shadow: inset 0 1px 0 var(--chrome-highlight), 0 2px 6px var(--chrome-shadow);
+}
+
+.soft-chrome #global-sidebar-navigation {
+  box-shadow: 2px 0 6px var(--chrome-shadow);
+}
+
+.soft-chrome #desktop-status-bar {
+  box-shadow: 0 -2px 6px var(--chrome-shadow);
+}
+
+.soft-chrome .soft-dock {
+  z-index: 11;
+  box-shadow: 3px 0 8px var(--chrome-shadow);
+}
+
+.window-caption-button {
+  width: 36px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+}
+
+.window-caption-button:hover {
+  background: rgba(127, 127, 127, 0.18);
+}
+
+.window-caption-button:focus-visible {
+  outline-offset: -3px;
+  border-radius: 8px;
+}
+
+.titlebar-tools button {
+  height: 28px;
+  min-width: 28px;
+  padding: 6px;
+  border-radius: 8px;
+}
+
+.titlebar-tab-scroll button {
+  width: 24px;
+  height: 28px;
+  padding: 6px;
+  border-radius: 8px;
+}
+
+.titlebar-tools .titlebar-more-menu button {
+  height: auto;
+  min-height: 32px;
+  padding: 6px 10px;
+  border-radius: 5px;
+}
+
+.titlebar-more-menu button:not(:disabled):is(:hover, :focus-visible) {
+  background: var(--menu-hover);
+}
+
+.window-caption-close:hover {
+  background: #c42b1c;
+  color: #fff;
+}
+
+/* Hover elevation for inactive top tabs & sidebar nav icons (theme colors via CSS vars) */
+.tab-item {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.tab-item:hover {
+  background-color: var(--hover-bg);
+  border-color: var(--hover-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.sidebar-nav-item {
+  background-color: transparent;
+}
+
+.sidebar-nav-item:hover {
+  background-color: var(--hover-bg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* Shared hover elevation for toolbar controls (theme colors via CSS vars) */
+.hover-elevate:hover {
+  background-color: var(--hover-bg, rgba(255, 255, 255, 0.05));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* Sleek minimalist scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Subtle glassmorphism effect */
+.backdrop-mica {
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+}
+
+/* SFTP file rows: light hover lift with shadow (whole row, not just the actions chip) */
+.sftp-file-row:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Light theme (Cloud Mist): flip the hardcoded slate text scale & input overlays.
+   Tailwind v4 utilities resolve slate-* through these custom properties, so one
+   class on the app root adapts every hardcoded dark-theme text color. */
+.theme-light {
+  color-scheme: light;
+  --color-white: #0f172a;
+  --color-black: #94a3b8;
+  --color-slate-100: #0f172a;
+  --color-slate-200: #1e293b;
+  --color-slate-300: #334155;
+  --color-slate-400: #64748b;
+  --color-slate-500: #94a3b8;
+  --color-slate-900: #e2e8f0;
+  --color-slate-950: #f8fafc;
+  /* 400-level accent icons/text get darker for light backgrounds */
+  --color-sky-300: #0369a1;
+  --color-sky-400: #0284c7;
+  --color-emerald-400: #059669;
+  --color-amber-400: #d97706;
+  --color-rose-400: #e11d48;
+  --color-violet-400: #7c3aed;
+  --color-purple-400: #9333ea;
+}
+
+/* Terminal scrollbar (xterm 6 renders its own VS Code-style scrollbar) —
+   restyled to match the app-wide sleek scrollbar */
+.xterm .xterm-scrollable-element > .scrollbar.vertical {
+  width: 6px !important;
+}
+
+.xterm .xterm-scrollable-element > .slider {
+  left: 0 !important;
+  width: 6px !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-radius: 9999px !important;
+}
+
+.xterm .xterm-scrollable-element > .scrollbar.vertical:hover > .slider {
+  background: rgba(255, 255, 255, 0.28) !important;
+}
+
+.theme-light .xterm .xterm-scrollable-element > .slider {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+.theme-light .xterm .xterm-scrollable-element > .scrollbar.vertical:hover > .slider {
+  background: rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Fallback: native viewport scrollbar, same look */
+.xterm-viewport::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.xterm-viewport::-webkit-scrollbar-track {
+  background: transparent;
+}
+.xterm-viewport::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 9999px;
+}
+.xterm-viewport::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* Hide scrollbars while keeping content scrollable (drawer filter tab rows) */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

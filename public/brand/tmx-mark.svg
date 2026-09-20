@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="signal" x1="22" y1="30" x2="98" y2="96" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#85F4EC"/><stop offset="1" stop-color="#38BDF8"/>
+    </linearGradient>
+  </defs>
+  <path d="M28 32 60 64 28 96" stroke="url(#signal)" stroke-width="16" stroke-linejoin="miter"/>
+  <path d="M68 94H108" stroke="#85F4EC" stroke-width="14"/>
+</svg>

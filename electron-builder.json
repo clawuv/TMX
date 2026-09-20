@@ -1,0 +1,60 @@
+{
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "io.github.he2dou.tmx",
+  "productName": "TMX",
+  "asar": true,
+  "npmRebuild": false,
+  "directories": {
+    "output": "release/${version}"
+  },
+  "files": [
+    "dist-electron",
+    "dist"
+  ],
+  "asarUnpack": [
+    "**/node_modules/node-pty/**",
+    "**/node_modules/ssh2/**",
+    "**/node_modules/better-sqlite3/**",
+    "dist-electron/mcp/**"
+  ],
+  "mac": {
+    "icon": "build/icon.icns",
+    "artifactName": "${productName}_${version}_${os}_${arch}.${ext}",
+    "target": [
+      "dmg",
+      "zip"
+    ]
+  },
+  "win": {
+    "icon": "build/icon.ico",
+    "target": [
+      {
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      }
+    ],
+    "artifactName": "${productName}_${version}_${os}_${arch}.${ext}"
+  },
+  "linux": {
+    "icon": "build/icon.png",
+    "target": [
+      "AppImage"
+    ],
+    "category": "Development",
+    "artifactName": "${productName}_${version}_${os}_${arch}.${ext}"
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "deleteAppDataOnUninstall": false
+  },
+  "publish": {
+    "provider": "github",
+    "owner": "he2dou",
+    "repo": "TMX",
+    "releaseType": "release"
+  }
+}

@@ -1,0 +1,100 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    tags: ['v*']
+    paths-ignore:
+      - '**.md'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build (${{ matrix.platform }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            platform: macOS-arm64
+            args: --mac --arm64
+          - os: windows-latest
+            platform: Windows-x64
+            args: --win --x64
+          - os: ubuntu-22.04
+            platform: Linux-x64
+            args: --linux --x64
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: Validate release version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: node -e "const p=require('./package.json'); if(process.env.GITHUB_REF_NAME !== 'v'+p.version) process.exit(1)"
+      - name: Install dependencies
+        run: npm install
+      - name: Type check
+        run: npm run typecheck
+      - name: Rebuild native modules for Electron
+        run: npm run rebuild:natives
+      - name: Build installers
+        run: npm run build -- ${{ matrix.args }} --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release-${{ matrix.platform }}
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            release/**/*.dmg
+            release/**/*.zip
+            release/**/*.exe
+            release/**/*.AppImage
+            release/**/*.blockmap
+            release/**/latest*.yml
+
+  release:
+    name: Publish release
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: release-*
+          path: artifacts
+          merge-multiple: true
+      - name: Publish installers and update manifests
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          cat > notes.md <<'NOTES'
+          TMX v1.0.0 首个正式版本。
+
+          - SSH 与本地终端、多标签和分屏
+          - 主机管理、SFTP 文件传输、快捷脚本
+          - AI 辅助、MCP 桥接与接口测试
+          - TMX 品牌图标及应用内更新入口
+
+          下载对应平台的安装包：macOS Apple Silicon（arm64）、Windows x64、Linux x64。
+          此版本未配置开发者证书签名或 macOS 公证，系统可能显示安全提示。
+          NOTES
+          mapfile -d '' files < <(find artifacts -type f -print0)
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" "${files[@]}" --clobber
+          else
+            gh release create "$RELEASE_TAG" "${files[@]}" --verify-tag --title "TMX $RELEASE_TAG" --notes-file notes.md
+          fi
