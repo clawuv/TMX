@@ -24,7 +24,7 @@ Add a `publish` field to `electron-builder.json` to define the update source and
 }
 ```
 
-For more information, please refer to [electron-builder.json](https://github.com/electron-vite/electron-vite-react/blob/main/electron-builder.json)
+For more information, please refer to [electron-builder.json](https://github.com/clawuv/TMX/blob/main/electron-builder.json)
 
 ### 2. Main-process update logic
 
@@ -36,7 +36,7 @@ This project keeps `autoDownload` disabled, so users start downloads manually.
 - `cancel-download` stops the current download and resets the cancellation token.
 - `quit-and-install` installs the downloaded update and restarts the app.
 
-For more information, please refer to [update.ts](https://github.com/electron-vite/electron-vite-react/blob/main/electron/main/update.ts)
+For more information, please refer to [update.ts](https://github.com/clawuv/TMX/blob/main/electron/main/update.ts)
 
 ### 3. Renderer UI
 
@@ -46,7 +46,7 @@ The update page is the user-facing entry point for the flow above. Users click t
 - If an update is available, the page lets the user start or cancel the download.
 - After the download completes, the page switches to **Install now**.
 
-For more information, please refer to [components/update/index.tsx](https://github.com/electron-vite/electron-vite-react/blob/main/src/components/update/index.tsx)
+For more information, please refer to [components/update/index.tsx](https://github.com/clawuv/TMX/blob/main/src/components/update/index.tsx)
 
 ---
 

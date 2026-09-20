@@ -24,7 +24,7 @@ pnpm add electron-updater
 }
 ```
 
-更多详情请见：[electron-builder.json](https://github.com/electron-vite/electron-vite-react/blob/main/electron-builder.json)
+更多详情请见：[electron-builder.json](https://github.com/clawuv/TMX/blob/main/electron-builder.json)
 
 ### 2. 主进程更新逻辑
 
@@ -36,7 +36,7 @@ pnpm add electron-updater
 - `cancel-download` 会取消当前下载，并重置取消令牌。
 - `quit-and-install` 会安装已下载的更新并重启应用。
 
-更多详情请见：[update.ts](https://github.com/electron-vite/electron-vite-react/blob/main/electron/main/update.ts)
+更多详情请见：[update.ts](https://github.com/clawuv/TMX/blob/main/electron/main/update.ts)
 
 ### 3. 渲染进程 UI
 
@@ -46,7 +46,7 @@ pnpm add electron-updater
 - 如果发现新版本，页面会允许用户开始或取消下载。
 - 下载完成后，页面会切换为 **Install now**。
 
-更多详情请见：[components/update/index.tsx](https://github.com/electron-vite/electron-vite-react/blob/main/src/components/update/index.tsx)
+更多详情请见：[components/update/index.tsx](https://github.com/clawuv/TMX/blob/main/src/components/update/index.tsx)
 
 ---
 
