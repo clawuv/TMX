@@ -1,0 +1,53 @@
+name: Publish v1.0.0 artifacts
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-v1.yml']
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  release:
+    name: Publish release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: release-*
+          path: artifacts
+          merge-multiple: true
+          run-id: 35520523889
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish installers and update manifests
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: v1.0.0
+        shell: bash
+        run: |
+          cat > notes.md <<'NOTES'
+          TMX v1.0.0 首个正式版本。
+
+          - SSH 与本地终端、多标签和分屏
+          - 主机管理、SFTP 文件传输、快捷脚本
+          - AI 辅助、MCP 桥接与接口测试
+          - TMX 品牌图标及应用内更新入口
+
+          下载对应平台的安装包：macOS Apple Silicon（arm64）、Windows x64、Linux x64。
+          此版本未配置开发者证书签名或 macOS 公证，系统可能显示安全提示。
+          NOTES
+          mapfile -d '' files < <(find artifacts -type f \( -name 'TMX_*' -o -name 'latest*.yml' \) -print0)
+          if gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft | grep -q '^true$'; then
+            gh release delete "$RELEASE_TAG" --yes
+          fi
+          if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" --verify-tag --draft --title "TMX $RELEASE_TAG" --notes-file notes.md
+          fi
+          gh release upload "$RELEASE_TAG" "${files[@]}" --clobber
+          gh release edit "$RELEASE_TAG" --draft=false --latest

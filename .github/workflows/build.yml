@@ -63,12 +63,12 @@ jobs:
           if-no-files-found: error
           retention-days: 14
           path: |
-            release/**/*.dmg
-            release/**/*.zip
-            release/**/*.exe
-            release/**/*.AppImage
-            release/**/*.blockmap
-            release/**/latest*.yml
+            release/*/TMX_*.dmg
+            release/*/TMX_*.zip
+            release/*/TMX_*.exe
+            release/*/TMX_*.AppImage
+            release/*/TMX_*.blockmap
+            release/*/latest*.yml
 
   release:
     name: Publish release
@@ -101,7 +101,7 @@ jobs:
           下载对应平台的安装包：macOS Apple Silicon（arm64）、Windows x64、Linux x64。
           此版本未配置开发者证书签名或 macOS 公证，系统可能显示安全提示。
           NOTES
-          mapfile -d '' files < <(find artifacts -type f -print0)
+          mapfile -d '' files < <(find artifacts -type f \( -name 'TMX_*' -o -name 'latest*.yml' \) -print0)
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             gh release upload "$RELEASE_TAG" "${files[@]}" --clobber
           else
