@@ -8,6 +8,14 @@ English | [简体中文](README.zh-CN.md)
 
 TMX is a modern desktop terminal client for SSH workflows, built on Electron + React. It bundles a real persistent terminal (node-pty / ssh2 / xterm.js), a host manager, SFTP, snippets, an AI copilot and a built-in MCP server into a single cross-platform app (macOS / Windows / Linux).
 
+## Screenshots
+
+| Terminal | SFTP |
+|---|---|
+| ![Terminal](docs/screenshots/terminal.png) | ![SFTP](docs/screenshots/sftp.png) |
+| **Themes & preferences** | **Command palette** |
+| ![Themes](docs/screenshots/settings-themes.png) | ![Command palette](docs/screenshots/command-palette.png) |
+
 ## Features
 
 - **SSH & local terminals** — real pty sessions powered by node-pty (local shell) and ssh2 (remote hosts). Sessions stay alive per tab (scrollback, vim and running jobs survive tab switches), with split panes and a PuTTY-style workflow: copy on select, right-click to paste.

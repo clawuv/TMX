@@ -8,6 +8,14 @@
 
 TMX 是一款现代化的桌面 SSH 终端客户端，基于 Electron + React 构建。它把真实持久的终端（node-pty / ssh2 / xterm.js）、主机管理、SFTP、快捷命令、AI 助手和内置 MCP 服务整合进一个跨平台应用（macOS / Windows / Linux）。
 
+## 界面预览
+
+| 终端 | SFTP |
+|---|---|
+| ![终端](docs/screenshots/terminal.png) | ![SFTP](docs/screenshots/sftp.png) |
+| **主题与偏好设置** | **命令面板** |
+| ![主题设置](docs/screenshots/settings-themes.png) | ![命令面板](docs/screenshots/command-palette.png) |
+
 ## 功能特性
 
 - **SSH 与本地终端** — 基于 node-pty（本地 Shell）和 ssh2（远程主机）的真实 pty 会话。会话按标签页常驻（切换标签不丢滚动回显、vim 和后台任务），支持分屏，并采用 PuTTY 风格工作流：选中即复制、右键即粘贴。
