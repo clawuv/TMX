@@ -22,7 +22,7 @@ jobs:
           - os: macos-latest
             platform: macOS-arm64
             args: --mac --arm64
-          - os: windows-latest
+          - os: windows-2022
             platform: Windows-x64
             args: --win --x64
           - os: ubuntu-22.04
@@ -42,13 +42,17 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         run: node -e "const p=require('./package.json'); if(process.env.GITHUB_REF_NAME !== 'v'+p.version) process.exit(1)"
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Install Electron runtime
+        run: node node_modules/electron/install.js
         env:
           ELECTRON_MIRROR: https://github.com/electron/electron/releases/download/
       - name: Type check
         run: npm run typecheck
       - name: Rebuild native modules for Electron
         run: npm run rebuild:natives
+      - name: Prepare terminal runtime helpers
+        run: node node_modules/node-pty/scripts/post-install.js
       - name: Build installers
         run: npm run build -- ${{ matrix.args }} --publish never
         env:
