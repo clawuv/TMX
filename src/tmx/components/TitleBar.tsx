@@ -96,7 +96,7 @@ export const TitleBar: React.FC<TitleBarProps> = ({
       <div className="flex items-center gap-3 shrink-0">
         {/* Brand Subtitle */}
         <div className="hidden sm:flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-medium text-slate-400">
-          <img src="./brand/tmx-wordmark.svg" alt="TMX" className="w-[68px] h-6 shrink-0" draggable={false} />
+          <img src={theme.light ? './brand/tmx-wordmark-light.svg' : './brand/tmx-wordmark.svg'} alt="TMX" className="w-[68px] h-6 shrink-0" draggable={false} />
           <span className="text-[10px] text-slate-500 font-mono">SSH</span>
         </div>
 

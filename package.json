@@ -1,6 +1,6 @@
 {
   "name": "tmx",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "private": true,
   "description": "TMX SSH client and local terminal",
   "license": "MIT",
