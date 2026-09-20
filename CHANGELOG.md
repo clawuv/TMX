@@ -2,6 +2,17 @@
 
 All notable changes to TMX are documented here.
 
+## 1.0.1
+
+- Keep the new application identifier `io.github.clawuv.tmx` and the `clawuv/TMX` update feed.
+- Report asynchronous update staging/install failures after the download completes.
+- Handle update IPC/download rejections and show guidance for macOS App Translocation.
+- Allow an explicit update installation to bypass the SSH session close confirmation.
+- Check for updates shortly after startup.
+- Remove demo AI history and the outdated settings version badge; refine command palette and SFTP styling.
+
+Migration: v1.0.0 used `io.github.he2dou.tmx`. Install v1.0.1 manually to migrate to the new identifier; in-app installation cannot migrate between these identifiers. macOS packages are not Developer ID signed or notarized.
+
 ## 1.0.0
 
 Initial release.

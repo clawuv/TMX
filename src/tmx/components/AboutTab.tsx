@@ -185,7 +185,9 @@ export function AboutTab({ theme }: { theme: ThemeConfig }) {
             {error && (
               <div className="flex items-start gap-1.5 text-[10px] text-rose-400">
                 <XCircle className="w-3 h-3 mt-0.5 shrink-0" />
-                <span className="break-all">{error}</span>
+                <span className="break-all">
+                  {error === 'AppTranslocation' ? t('settings.updateTranslocation') : error}
+                </span>
               </div>
             )}
           </div>

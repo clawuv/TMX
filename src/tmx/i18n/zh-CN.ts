@@ -204,7 +204,7 @@ const zhCN = {
   ai: {
     title: 'AI',
     model: '模型: {model}',
-    contextPlaceholder: '用自然语言描述需求，如：查找80端口占用...',
+    contextPlaceholder: '描述你的需求…',
     insert: '填入终端',
     execute: '立即执行',
     copyCmd: '复制命令',
@@ -324,6 +324,7 @@ const zhCN = {
     cancelDownload: '取消下载',
     installAndRestart: '重启并安装',
     updateDownloaded: '更新包已下载',
+    updateTranslocation: 'TMX 正在以临时转译副本方式运行（通常是从 DMG 直接启动导致）。请先将 TMX 拖入「应用程序」文件夹并重新打开，再安装更新。',
     updateError: '更新失败',
     needPackaged: '更新功能仅在打包安装版中可用，开发模式暂不可用。',
     needDesktop: '更新功能仅在桌面应用中可用。',

@@ -49,6 +49,8 @@ jobs:
           ELECTRON_MIRROR: https://github.com/electron/electron/releases/download/
       - name: Type check
         run: npm run typecheck
+      - name: Unit tests
+        run: pnpm exec vitest run
       - name: Rebuild native modules for Electron
         run: npm run rebuild:natives
       - name: Prepare terminal runtime helpers
@@ -78,6 +80,9 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - uses: actions/download-artifact@v8
         with:
           pattern: release-*
@@ -90,20 +95,15 @@ jobs:
           RELEASE_TAG: ${{ github.ref_name }}
         shell: bash
         run: |
-          cat > notes.md <<'NOTES'
-          TMX v1.0.0 首个正式版本。
-
-          - SSH 与本地终端、多标签和分屏
-          - 主机管理、SFTP 文件传输、快捷脚本
-          - AI 辅助、MCP 桥接与接口测试
-          - TMX 品牌图标及应用内更新入口
-
-          下载对应平台的安装包：macOS Apple Silicon（arm64）、Windows x64、Linux x64。
-          此版本未配置开发者证书签名或 macOS 公证，系统可能显示安全提示。
-          NOTES
-          mapfile -d '' files < <(find artifacts -type f \( -name 'TMX_*' -o -name 'latest*.yml' \) -print0)
-          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
-            gh release upload "$RELEASE_TAG" "${files[@]}" --clobber
+          if [ -f "docs/releases/${RELEASE_TAG}.md" ]; then
+            cp "docs/releases/${RELEASE_TAG}.md" notes.md
           else
-            gh release create "$RELEASE_TAG" "${files[@]}" --verify-tag --title "TMX $RELEASE_TAG" --notes-file notes.md
+            printf 'TMX %s\n' "$RELEASE_TAG" > notes.md
           fi
+          mapfile -d '' files < <(find artifacts -type f \( -name 'TMX_*' -o -name 'latest*.yml' \) -print0)
+          test "${#files[@]}" -gt 0
+          if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" --verify-tag --draft --title "TMX $RELEASE_TAG" --notes-file notes.md
+          fi
+          gh release upload "$RELEASE_TAG" "${files[@]}" --clobber
+          gh release edit "$RELEASE_TAG" --draft=false --latest --notes-file notes.md

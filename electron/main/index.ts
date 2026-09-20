@@ -227,8 +227,11 @@ async function createWindow() {
     if (url !== win.webContents.getURL()) event.preventDefault()
   })
 
-  // Auto update
-  update(win)
+  // Auto update. Installing quits the app — hand over a hook that flags
+  // forceClose so the SSH-session close confirmation can't block the install.
+  update(win, () => {
+    forceClose = true
+  })
 }
 
 app.whenReady().then(() => {

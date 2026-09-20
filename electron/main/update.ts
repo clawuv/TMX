@@ -10,8 +10,28 @@ import updater from 'electron-updater'
 const autoUpdater = updater.autoUpdater
 let cancellationToken = new updater.CancellationToken()
 let isDownloading = false
+let activeWin: Electron.BrowserWindow | null = null
+/** Set by index.ts so installing can bypass the SSH-session close confirmation. */
+let beforeInstall: (() => void) | null = null
+let errorListenerRegistered = false
 
-export function update(win: Electron.BrowserWindow) {
+function reportUpdateError(error: unknown): void {
+  const message = error instanceof Error ? error.message : String(error)
+  isDownloading = false
+  if (activeWin && !activeWin.isDestroyed() && !activeWin.webContents.isDestroyed()) {
+    activeWin.webContents.send('update-error', { message })
+  }
+}
+
+export function update(win: Electron.BrowserWindow, onInstall?: () => void) {
+  activeWin = win
+  beforeInstall = onInstall ?? null
+  // Squirrel validates/stages a macOS update AFTER the download event. Keep
+  // listening throughout the app lifetime so those asynchronous errors reach UI.
+  if (!errorListenerRegistered) {
+    autoUpdater.on('error', reportUpdateError)
+    errorListenerRegistered = true
+  }
 
   // When set to false, the update download will be triggered through the API
   autoUpdater.autoDownload = false
@@ -54,7 +74,7 @@ export function update(win: Electron.BrowserWindow) {
         if (error) {
           isDownloading = false
           // feedback download error message
-          event.sender.send('update-error', { message: error.message, error })
+          // The persistent updater listener reports emitted errors.
         } else {
           // feedback update progress message
           event.sender.send('download-progress', progressInfo)
@@ -76,7 +96,19 @@ export function update(win: Electron.BrowserWindow) {
 
   // Install now
   ipcMain.handle('quit-and-install', () => {
-    autoUpdater.quitAndInstall(false, true)
+    // Installing quits the app; bypass the SSH-session close confirmation so
+    // an explicit update install is never silently blocked by it.
+    try {
+      // Squirrel.Mac cannot update a translocated copy (app run from the DMG
+      // instead of /Applications) — without this check the call fails silently.
+      if (process.platform === 'darwin' && app.getPath('exe').includes('AppTranslocation')) {
+        throw new Error('AppTranslocation')
+      }
+      beforeInstall?.()
+      autoUpdater.quitAndInstall(false, true)
+    } catch (error) {
+      reportUpdateError(error)
+    }
   })
 }
 
@@ -103,5 +135,10 @@ function startDownload(
   autoUpdater.on('download-progress', onDownloadProgress)
   autoUpdater.on('error', onError)
   autoUpdater.once('update-downloaded', onDownloaded)
-  autoUpdater.downloadUpdate(cancellationToken)
+  // downloadUpdate can reject without emitting an error (for example before
+  // an update has been selected). Never leave an unhandled main-process promise.
+  void autoUpdater.downloadUpdate(cancellationToken).catch((error: unknown) => {
+    cleanup()
+    reportUpdateError(error)
+  })
 }

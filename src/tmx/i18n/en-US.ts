@@ -204,7 +204,7 @@ const enUS: Dictionary = {
   ai: {
     title: 'AI',
     model: 'Model: {model}',
-    contextPlaceholder: 'Describe your task, e.g. find what occupies port 80...',
+    contextPlaceholder: 'Describe your task…',
     insert: 'Insert to terminal',
     execute: 'Run now',
     copyCmd: 'Copy command',
@@ -324,6 +324,7 @@ const enUS: Dictionary = {
     cancelDownload: 'Cancel download',
     installAndRestart: 'Restart to install',
     updateDownloaded: 'Update downloaded',
+    updateTranslocation: 'TMX is running from a temporary translocated copy (usually caused by launching it directly from the DMG). Move TMX into the Applications folder, relaunch it, then install the update again.',
     updateError: 'Update failed',
     needPackaged: 'Updates are only available in the packaged app, not in dev mode.',
     needDesktop: 'Updates are only available in the desktop app.',

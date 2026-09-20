@@ -407,14 +407,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <Sliders className="w-4 h-4" style={{ color: theme.accentPrimary }} />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-sm text-slate-100 tracking-tight">
-                  {t('settings.title')}
-                </h3>
-                <span className="text-[9px] px-1.5 py-0.5 rounded font-mono bg-white/10 text-slate-400">
-                  v2.4
-                </span>
-              </div>
+              <h3 className="font-semibold text-sm text-slate-100 tracking-tight">
+                {t('settings.title')}
+              </h3>
             </div>
           </div>
 

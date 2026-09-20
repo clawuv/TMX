@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
-  "appId": "io.github.he2dou.tmx",
+  "appId": "io.github.clawuv.tmx",
   "productName": "TMX",
   "asar": true,
   "npmRebuild": false,

@@ -24,7 +24,7 @@ import { StatusBar } from './components/StatusBar';
 import { I18nProvider, useI18n } from './i18n/context';
 import { ResizableDock } from './components/ResizableDock';
 import { onMenuAction, setWindowTitle, type MenuAction } from './utils/desktop';
-import { initUpdateBridge } from './utils/updateState';
+import { initUpdateBridge, silentUpdateCheck } from './utils/updateState';
 import { useNativeContextMenu } from './utils/useNativeContextMenu';
 
 // Docked drawer width: percentage of window width (≈320px on a 1920 screen),
@@ -489,13 +489,13 @@ export default function App() {
   const isLocalTab = activeTab.hostId === 'local';
 
   // Updater bridge: wire the IPC events once so the sidebar badge and the
-  // About tab react to checks. The badge lights up when a check finds a newer
-  // version (manual check for now).
-  // NOTE: publish in electron-builder.json still points at the boilerplate
-  // repo. Enable silentUpdateCheck() here only after pointing publish at your
-  // own release feed, or the app would offer "updates" from the template repo.
+  // About tab react to checks, then run one silent check shortly after
+  // startup. The badge in the sidebar lights up when a newer release exists
+  // (publish in electron-builder.json points at the clawuv/TMX release feed;
+  // in dev the check is a guarded no-op because the app is not packaged).
   useEffect(() => {
     initUpdateBridge();
+    silentUpdateCheck();
   }, []);
 
   // Global Keyboard shortcuts (browser fallback). In Electron these are native

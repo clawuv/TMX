@@ -193,8 +193,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           <button
             onClick={onClose}
             title={t('palette.closeEsc')}
-            className="shrink-0 hidden sm:inline-flex px-1.5 py-0.5 text-[10px] font-mono bg-white/10 rounded border border-white/15 text-slate-400 hover:text-slate-200 hover:bg-white/15 transition-colors cursor-pointer whitespace-nowrap"
+            className="shrink-0 hidden sm:inline-flex items-center gap-1.5 px-2 py-1 -mr-1 rounded-md text-[10px] font-medium text-slate-500 hover:text-slate-200 hover:bg-white/10 transition-colors cursor-pointer whitespace-nowrap"
           >
+            <kbd className="px-1 py-px rounded bg-white/10 border border-white/10 font-mono text-[9px] text-slate-400">ESC</kbd>
             {t('palette.exit')}
           </button>
         </div>

@@ -710,7 +710,8 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
                   <>
                     <button
                       onClick={() => void loadPath(rootLabel)}
-                      className="text-sky-400 hover:underline shrink-0 font-semibold"
+                      className="hover:underline shrink-0"
+                      style={{ color: theme.accentPrimary }}
                     >
                       {rootLabel}
                     </button>
@@ -723,11 +724,12 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
                         <React.Fragment key={target}>
                           <button
                             onClick={() => void loadPath(target)}
-                            className={`whitespace-nowrap hover:underline ${isLast ? 'text-sky-400 font-semibold' : 'text-slate-400'}`}
+                            className={`whitespace-nowrap hover:underline ${isLast ? 'font-semibold' : ''}`}
+                            style={{ color: theme.accentPrimary }}
                           >
                             {seg}
                           </button>
-                          {!isLast && <span className="text-slate-600">/</span>}
+                          {!isLast && <span style={{ color: theme.textSecondary }}>/</span>}
                         </React.Fragment>
                       );
                     })}

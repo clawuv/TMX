@@ -123,7 +123,10 @@ export function cancelUpdateDownload(): void {
 
 export function installUpdate(): void {
   if (!isElectron()) return
-  void window.ipcRenderer.invoke('quit-and-install')
+  setSnapshot({ error: null })
+  void window.ipcRenderer.invoke('quit-and-install').catch((error: unknown) => {
+    setSnapshot({ error: error instanceof Error ? error.message : String(error) })
+  })
 }
 
 /** One silent check shortly after startup; in dev it is a guarded no-op. */

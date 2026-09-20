@@ -42,29 +42,7 @@ export const AICopilotDrawer: React.FC<AICopilotDrawerProps> = ({
     command: string;
     explanation: string;
     dangerLevel: 'safe' | 'warning' | 'critical';
-  }[]>([
-    {
-      id: 'ai-1',
-      query: '查看所有处于监听状态的高危网络端口',
-      command: 'ss -tulpn | grep LISTEN',
-      explanation: '使用现代 ss 工具高效列出 TCP/UDP 正在监听的 Socket 及其绑定的进程 PID。',
-      dangerLevel: 'safe',
-    },
-    {
-      id: 'ai-2',
-      query: '统计 Nginx access.log 中请求频次最高的 Top 10 IP',
-      command: "awk '{print $1}' /var/log/nginx/access.log | sort | uniq -c | sort -nr | head -n 10",
-      explanation: '流水线提取第一列客户端 IP，排序并聚合去重计数，快速排查潜在爬虫或 CC 攻击源。',
-      dangerLevel: 'safe',
-    },
-    {
-      id: 'ai-3',
-      query: '安全清理 Docker 悬空虚悬无标签镜像以释放空间',
-      command: 'docker image prune -f',
-      explanation: '仅清理没有被任何容器关联的中间构建层虚悬镜像 (<none>)，不会影响现有线上业务服务。',
-      dangerLevel: 'warning',
-    }
-  ]);
+  }[]>([]);
 
   if (!isOpen) return null;
 
