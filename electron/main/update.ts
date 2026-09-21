@@ -14,8 +14,13 @@ let activeWin: Electron.BrowserWindow | null = null
 /** Set by index.ts so installing can bypass the SSH-session close confirmation. */
 let beforeInstall: (() => void) | null = null
 let errorListenerRegistered = false
+/** Outcome of the most recent check, so the renderer can pick it up whenever it boots. */
+let lastCheckResult: { update: boolean; version: string; newVersion: string | null } | null = null
+/** True while the silent startup check runs — its failures must not alarm the UI. */
+let silentStartupCheck = false
 
 function reportUpdateError(error: unknown): void {
+  if (silentStartupCheck) return
   const message = error instanceof Error ? error.message : String(error)
   isDownloading = false
   if (activeWin && !activeWin.isDestroyed() && !activeWin.webContents.isDestroyed()) {
@@ -42,11 +47,13 @@ export function update(win: Electron.BrowserWindow, onInstall?: () => void) {
   autoUpdater.on('checking-for-update', function () { })
   // update available
   autoUpdater.on('update-available', (arg: UpdateInfo) => {
-    win.webContents.send('update-can-available', { update: true, version: app.getVersion(), newVersion: arg?.version })
+    lastCheckResult = { update: true, version: app.getVersion(), newVersion: arg?.version ?? null }
+    win.webContents.send('update-can-available', lastCheckResult)
   })
   // update not available
   autoUpdater.on('update-not-available', (arg: UpdateInfo) => {
-    win.webContents.send('update-can-available', { update: false, version: app.getVersion(), newVersion: arg?.version })
+    lastCheckResult = { update: false, version: app.getVersion(), newVersion: arg?.version ?? null }
+    win.webContents.send('update-can-available', lastCheckResult)
   })
 
   // Checking for updates
@@ -63,6 +70,24 @@ export function update(win: Electron.BrowserWindow, onInstall?: () => void) {
       return { message: resolvedError.message, error: resolvedError }
     }
   })
+
+  // Cached outcome of the startup check, so the renderer can pick up results
+  // that fired before its listeners were wired during boot.
+  ipcMain.handle('update:last-check', () => lastCheckResult)
+
+  // First check runs at app launch, in parallel with the splash animation.
+  // Packaged builds only — dev has no publish feed to talk to.
+  if (app.isPackaged) {
+    setTimeout(() => {
+      silentStartupCheck = true
+      autoUpdater
+        .checkForUpdates()
+        .catch(() => {})
+        .finally(() => {
+          silentStartupCheck = false
+        })
+    }, 1000)
+  }
 
   // Start downloading and feedback on progress
   ipcMain.handle('start-download', (event: Electron.IpcMainInvokeEvent) => {

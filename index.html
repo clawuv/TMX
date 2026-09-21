@@ -9,6 +9,42 @@
   </head>
   <body>
     <div id="root"></div>
+
+    <!-- Launch splash: TMX brand mark pulses while the renderer boots; main.tsx posts 'removeLoading' once React is mounted. -->
+    <div id="launch-splash" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#12141A;transition:opacity .25s ease;">
+      <img src="./brand/tmx-app.svg" alt="TMX" style="width:88px;height:88px;animation:splash-pulse 1.6s ease-in-out infinite;" draggable="false" />
+    </div>
+    <style>
+      @keyframes splash-pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(.92); opacity: .72; }
+      }
+      #launch-splash.hide { opacity: 0; pointer-events: none; }
+    </style>
+    <script>
+      (function () {
+        var splash = document.getElementById('launch-splash');
+        var start = Date.now();
+        var gone = false;
+        function hide() {
+          if (gone || !splash) return;
+          gone = true;
+          // Keep the brand animation visible for at least 800ms so fast
+          // local boots still show it.
+          var wait = Math.max(0, 800 - (Date.now() - start));
+          window.setTimeout(function () {
+            splash.classList.add('hide');
+            window.setTimeout(function () { splash.remove(); }, 300);
+          }, wait);
+        }
+        window.addEventListener('message', function (e) {
+          if (e.data && e.data.payload === 'removeLoading') hide();
+        });
+        // Safety net: never hold the splash longer than 4s, whatever happens.
+        window.setTimeout(hide, 4000);
+      })();
+    </script>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

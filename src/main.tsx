@@ -14,4 +14,10 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   </React.StrictMode>,
 )
 
-postMessage({ payload: 'removeLoading' }, '*')
+// Dismiss the launch splash only after the app's first painted frame, so the
+// brand mark never flashes away to a blank background.
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    postMessage({ payload: 'removeLoading' }, '*')
+  })
+})

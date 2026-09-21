@@ -25,5 +25,29 @@ const setKey = (key, value) => {
 
 setKey('CFBundleName', APP_NAME)
 setKey('CFBundleDisplayName', APP_NAME)
-execFileSync('codesign', ['--force', '--deep', '--sign', '-', appPath], { stdio: 'pipe' })
-console.log(`[patch-dev-app-name] dev Electron.app renamed to "${APP_NAME}" and re-signed`)
+
+// Prefer the user's real Apple Development certificate: a stable Team ID
+// signature keeps the "TMX Safe Storage" keychain ACL happy, so safeStorage
+// stops prompting for keychain access on every launch. Fall back to ad-hoc
+// signing when the identity is not installed.
+const identity = 'Apple Development: Haitao He (357TZ4494T)'
+const hasIdentity = (() => {
+  try {
+    const out = execFileSync('security', ['find-identity', '-v', '-p', 'codesigning'], {
+      encoding: 'utf8',
+      stdio: ['pipe', 'pipe', 'pipe'],
+    })
+    return out.includes(`"${identity}"`)
+  } catch {
+    return false
+  }
+})()
+
+execFileSync(
+  'codesign',
+  ['--force', '--deep', '--sign', hasIdentity ? identity : '-', appPath],
+  { stdio: 'pipe' },
+)
+console.log(
+  `[patch-dev-app-name] dev Electron.app renamed to "${APP_NAME}" and signed with ${hasIdentity ? identity : 'ad-hoc'}`,
+)

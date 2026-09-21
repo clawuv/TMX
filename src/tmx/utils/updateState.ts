@@ -87,6 +87,27 @@ export function initUpdateBridge(): void {
       error: p?.message || 'Update failed',
     })
   })
+  // The main process checks at launch (while the splash is up). Pick up that
+  // cached result here in case the event fired before this bridge was wired.
+  void (async () => {
+    try {
+      const last = (await ipc.invoke('update:last-check')) as {
+        update: boolean
+        version: string
+        newVersion: string | null
+      } | null
+      if (last && snapshot.phase === 'idle') {
+        setSnapshot({
+          phase: last.update ? 'available' : 'up-to-date',
+          version: last.version,
+          newVersion: last.newVersion,
+          progress: null,
+          error: null,
+          packagedOnly: false,
+        })
+      }
+    } catch {}
+  })()
 }
 
 export async function checkForUpdates(): Promise<void> {
@@ -127,12 +148,4 @@ export function installUpdate(): void {
   void window.ipcRenderer.invoke('quit-and-install').catch((error: unknown) => {
     setSnapshot({ error: error instanceof Error ? error.message : String(error) })
   })
-}
-
-/** One silent check shortly after startup; in dev it is a guarded no-op. */
-export function silentUpdateCheck(delayMs = 3000): void {
-  if (!isElectron()) return
-  setTimeout(() => {
-    void checkForUpdates()
-  }, delayMs)
 }

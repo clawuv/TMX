@@ -207,8 +207,8 @@ async function createWindow() {
 
   if (VITE_DEV_SERVER_URL) { // #298
     win.loadURL(VITE_DEV_SERVER_URL)
-    // Open devTool if the app is not packaged
-    win.webContents.openDevTools()
+    // DevTools are opt-in during development — set TMX_OPEN_DEVTOOLS=1 to open them.
+    if (process.env.TMX_OPEN_DEVTOOLS === '1') win.webContents.openDevTools()
   } else {
     win.loadFile(indexHtml)
   }
