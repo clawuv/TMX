@@ -805,6 +805,28 @@ export default function App() {
     }
   };
 
+  // Placeholder for a pane whose pty has not answered yet (startup, or the
+  // window between opening a tab and its session being registered).
+  const mockTerminalCanvas = (
+    <TerminalCanvas
+      lines={terminalLines[activeTabId] || []}
+      onExecuteCommand={handleExecuteCommand}
+      host={activeHost}
+      theme={currentTheme}
+      fontSize={preferences.fontSize}
+      fontFamily={preferences.fontFamily}
+      lineHeight={preferences.lineHeight}
+      cursorStyle={preferences.cursorStyle}
+      cursorBlink={preferences.cursorBlink}
+      showGrid={preferences.showGrid}
+      showWatermark={preferences.showWatermark}
+      watermarkOpacity={preferences.watermarkOpacity}
+      isSplit={isSplitPane}
+      paneId={activeTabId}
+      onOpenPaletteModal={() => setIsPaletteModalOpen(true)}
+    />
+  )
+
   return (
     <I18nProvider languagePref={preferences.language}>
     <div 
@@ -961,9 +983,15 @@ export default function App() {
             {/* View 1: Terminal Mode */}
             {activeTab.contentType === 'terminal' && (
               <div className="flex-1 flex h-full overflow-hidden">
-                {IN_ELECTRON && sessions[activeTabId] ? (
+                {IN_ELECTRON && Object.keys(sessions).length > 0 ? (
                   <>
-                    {/* Real sessions: every pane stays mounted (scrollback/vim survive tab switches) */}
+                    {/* Real sessions: every pane stays mounted (scrollback/vim survive tab switches).
+                        This branch must not key off the active pane alone: opening a tab makes
+                        sessions[activeTabId] undefined for as long as the pty/SSH handshake takes,
+                        which would unmount every xterm and destroy the other tabs' history. */}
+                    {!sessions[activeTabId] && (
+                      <div className="flex-1 flex h-full min-w-0">{mockTerminalCanvas}</div>
+                    )}
                     {Object.entries(sessions).map(([paneId, session]) => {
                       const isActivePane = paneId === activeTabId;
                       const isSecondary = paneId === 'secondary-split' && isSplitPane;
@@ -1017,24 +1045,8 @@ export default function App() {
                   </>
                 ) : (
                   <>
-                    {/* Mock canvas fallback (browser mode / session not ready) */}
-                    <TerminalCanvas
-                      lines={terminalLines[activeTabId] || []}
-                      onExecuteCommand={handleExecuteCommand}
-                      host={activeHost}
-                      theme={currentTheme}
-                      fontSize={preferences.fontSize}
-                      fontFamily={preferences.fontFamily}
-                      lineHeight={preferences.lineHeight}
-                      cursorStyle={preferences.cursorStyle}
-                      cursorBlink={preferences.cursorBlink}
-                      showGrid={preferences.showGrid}
-                      showWatermark={preferences.showWatermark}
-                      watermarkOpacity={preferences.watermarkOpacity}
-                      isSplit={isSplitPane}
-                      paneId={activeTabId}
-                      onOpenPaletteModal={() => setIsPaletteModalOpen(true)}
-                    />
+                    {/* Mock canvas fallback (browser mode / no real session at all) */}
+                    {mockTerminalCanvas}
 
                     {/* Secondary Split Pane (if Split active) */}
                     {isSplitPane && (
