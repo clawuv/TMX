@@ -56,7 +56,7 @@ export interface ConnectionHost {
   cpuLoad: number;
   memLoad: number;
   diskLoad: number;
-  os: 'Ubuntu 24.04 LTS' | 'Debian 12' | 'Alpine 3.20' | 'Arch Linux';
+  os: string;
   fingerprint: string;
   authMethod: 'Ed25519 Key' | 'RSA 4096' | 'Password';
   /** Bookmarked hosts sort first in the host list; order = sortIndex. */
@@ -113,10 +113,72 @@ export interface SftpEntry {
   gid: number;
 }
 
+/** What the monitor page should sample. `local` targets the machine running TMX. */
+export type MonitorTarget =
+  | { kind: 'local' }
+  | {
+      kind: 'ssh';
+      host: string;
+      port: number;
+      username: string;
+      password?: string;
+      privateKeyPath?: string;
+      passphrase?: string;
+      keepaliveInterval?: number;
+    };
+
+export interface MonitorProcess {
+  pid: number;
+  user: string;
+  cpu: number;
+  mem: number;
+  /** Raw `ps` state token (e.g. "Ss", "R+") on Unix; the process name on Windows. */
+  state: string;
+  command: string;
+}
+
+export interface MonitorDisk {
+  mount: string;
+  fs: string;
+  total: number;
+  used: number;
+}
+
+export interface MonitorNetIface {
+  name: string;
+  rxBytes: number;
+  txBytes: number;
+  /** bytes per second */
+  rxRate: number;
+  /** bytes per second */
+  txRate: number;
+}
+
+/** One sampled snapshot of a monitored host (mirrors electron/main/monitor-parse.ts). */
+export interface MonitorSample {
+  os: string;
+  kernel: string;
+  hostname: string;
+  uptimeSec: number;
+  cpuPercent: number;
+  cpuCount: number;
+  cpuModel: string;
+  cpuMhz: number;
+  loadAvg: [number, number, number] | null;
+  memTotal: number;
+  memUsed: number;
+  swapTotal: number;
+  swapUsed: number;
+  disks: MonitorDisk[];
+  net: MonitorNetIface[];
+  processes: MonitorProcess[];
+  /** Round-trip time of the sampling call itself, in ms. */
+  rttMs: number;
+  sampledAt: number;
+}
+
 export type TransferDirection = 'upload' | 'download';
-
 export type TransferStatus = 'queued' | 'active' | 'done' | 'error' | 'cancelled';
-
 export interface TransferItem {
   id: string;
   direction: TransferDirection;

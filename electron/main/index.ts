@@ -6,6 +6,9 @@ import os from 'node:os'
 import { update } from './update'
 import { activeSshSessionCount, registerTerminalIpc } from './terminal'
 import { registerSftpIpc } from './sftp'
+// Host monitoring: reuses one dedicated ssh2 connection per host (never the
+// user's interactive shell) and samples the local machine directly
+import { registerMonitorIpc } from './monitor'
 import { registerLocalFsIpc } from './localfs'
 import { initDb, readPreferences, registerDbIpc } from './db'
 import { registerMcpBridge, startMcpBridgeIfEnabled } from './mcp-bridge'
@@ -304,6 +307,8 @@ registerWindowControls()
 registerTerminalIpc(() => win)
 // SFTP file browsing + upload/download transfers (own ssh2 connection pool)
 registerSftpIpc(() => win)
+// Host monitor sampling (CPU/mem/disk/net/processes)
+registerMonitorIpc(() => win)
 // Local filesystem browsing for local shell tabs (SFTP panel in "local" mode)
 registerLocalFsIpc()
 // SQLite persistence for hosts/bookmarks/snippets/preferences

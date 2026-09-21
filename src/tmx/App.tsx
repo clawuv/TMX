@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { ShieldAlert } from 'lucide-react';
-import type { ConnectionHost, TabItem, TabContentType, TerminalLine, ThemeConfig, QuickSnippet, UserPreferences, SettingTabId } from './types';
+import type { ConnectionHost, TabItem, TabContentType, TerminalLine, ThemeConfig, QuickSnippet, UserPreferences, SettingTabId, MonitorTarget } from './types';
 import { DEFAULT_PREFERENCES } from './types';
 import { THEMES } from './data/themes';
 import { INITIAL_HOSTS, INITIAL_TABS, INITIAL_SNIPPETS } from './data/mockData';
@@ -426,19 +426,12 @@ export default function App() {
   };
 
   // Remote/local process closed on its own: keep the pane mounted (its scrollback
-  // holds the "[会话已断开]" message) but flag it dead and mark the tab.
+  // holds the "[会话已断开]" message) but flag it dead and mark the tab. Dropping
+  // the entry instead would unmount the pane and throw that scrollback away.
   const handleSessionExit = (sessionId: string) => {
     const entry = Object.entries(sessionsRef.current).find(([, s]) => s.sessionId === sessionId);
     if (!entry) return;
     const [paneId] = entry;
-    if (paneId === 'secondary-split') {
-      setSessions((prev) => {
-        const next = { ...prev };
-        delete next['secondary-split'];
-        return next;
-      });
-      return;
-    }
     setSessions((prev) =>
       prev[paneId] ? { ...prev, [paneId]: { ...prev[paneId], exited: true } } : prev,
     );
@@ -487,6 +480,53 @@ export default function App() {
   const activeHost = hosts.find((h) => h.id === activeTab.hostId) || hosts[0] || NO_HOST;
   // A local shell tab browses the machine's own filesystem in the SFTP panel.
   const isLocalTab = activeTab.hostId === 'local';
+
+  // ── Monitor target ────────────────────────────────────────────────────────
+  // An explicit pick from the Hosts drawer wins; otherwise the monitor follows the
+  // active tab, so a local shell reports this machine instead of a random host.
+  const localHost = useMemo<ConnectionHost>(
+    () => ({
+      id: 'local',
+      name: t('monitor.localHost'),
+      host: 'localhost',
+      user: '',
+      port: 0,
+      group: '',
+      tag: '',
+      status: 'online',
+      pingMs: 0,
+      cpuLoad: 0,
+      memLoad: 0,
+      diskLoad: 0,
+      os: '',
+      fingerprint: '',
+      authMethod: 'Password',
+    }),
+    [t],
+  );
+
+  const toSshTarget = useCallback(
+    (h: ConnectionHost): MonitorTarget => ({
+      kind: 'ssh',
+      host: h.host,
+      port: h.port,
+      username: h.user,
+      password: h.password,
+      privateKeyPath: h.privateKeyPath,
+      passphrase: h.passphrase,
+      keepaliveInterval: preferences.sshKeepAlive,
+    }),
+    [preferences.sshKeepAlive],
+  );
+
+  const { monitorHost, monitorTarget } = useMemo(() => {
+    // Browser mode has no sampler; SystemMonitor keeps its simulated dashboard.
+    if (!IN_ELECTRON) return { monitorHost: activeHost, monitorTarget: null };
+    const pinned = monitorHostId ? hosts.find((h) => h.id === monitorHostId) : undefined;
+    if (pinned) return { monitorHost: pinned, monitorTarget: toSshTarget(pinned) };
+    if (isLocalTab) return { monitorHost: localHost, monitorTarget: { kind: 'local' } as MonitorTarget };
+    return { monitorHost: activeHost, monitorTarget: toSshTarget(activeHost) };
+  }, [hosts, monitorHostId, isLocalTab, activeHost, localHost, toSshTarget]);
 
   // Updater bridge: wire the IPC events once so the sidebar badge and the
   // About tab react to checks, then run one silent check shortly after
@@ -702,6 +742,19 @@ export default function App() {
       setIsCommandPaletteOpen(true);
       return;
     }
+    if (nav === 'monitor') {
+      // Monitor follows the active tab's own connection (a local shell monitors
+      // this machine), so no drawer opens — the icon just lights up.
+      setDockedSftpOpen(false);
+      setActiveSidebarNav(null);
+      if (activeTab.contentType === 'monitor') {
+        handleChangeContentType('terminal');
+      } else {
+        setMonitorHostId(null);
+        handleChangeContentType('monitor');
+      }
+      return;
+    }
     if (nav === 'themes') {
       setIsPaletteModalOpen(true);
       return;
@@ -778,7 +831,14 @@ export default function App() {
   // makes RealTerminal dispose the old terminal and start a clean one.
   const handleReconnectPane = async (paneId: string) => {
     const dead = sessionsRef.current[paneId];
-    if (!dead || dead.kind !== 'ssh') return;
+    if (!dead) return;
+    if (dead.kind === 'local') {
+      const sessionId = await createLocalSession(paneId);
+      if (sessionId) {
+        setTabs((prev) => prev.map((t) => (t.id === paneId ? { ...t, status: 'connected' } : t)));
+      }
+      return;
+    }
     const tab = tabs.find((t) => t.id === paneId);
     const host = tab ? hosts.find((h) => h.id === tab.hostId) : undefined;
     if (!host) return;
@@ -800,7 +860,10 @@ export default function App() {
   const handleToggleSplit = () => {
     const next = !isSplitPane;
     setIsSplitPane(next);
-    if (next && IN_ELECTRON && !sessionsRef.current['secondary-split']) {
+    // Turning the split on always yields a live shell: a dead pane kept around
+    // from a previous exit is replaced rather than shown again.
+    const existing = sessionsRef.current['secondary-split'];
+    if (next && IN_ELECTRON && (!existing || existing.exited)) {
       void createLocalSession('secondary-split');
     }
   };
@@ -879,7 +942,7 @@ export default function App() {
         {/* Global Left Narrow Sidebar (Hidden in Zen mode) */}
         {!isZenMode && (
           <Sidebar
-            activeNav={activeSidebarNav}
+            activeNav={activeTab.contentType === 'monitor' && !activeSidebarNav ? 'monitor' : activeSidebarNav}
             openPanels={[
               ...(dockedSftpOpen ? ['sftp' as const] : []),
               ...(isSettingsOpen ? ['settings' as const] : []),
@@ -980,8 +1043,10 @@ export default function App() {
 
           {/* Dynamic Content View */}
           <div className="flex-1 flex overflow-hidden relative">
-            {/* View 1: Terminal Mode */}
-            {activeTab.contentType === 'terminal' && (
+            {/* View 1: Terminal Mode. Kept mounted while the SFTP/monitor views are
+                shown — only hidden — so xterm scrollback and running jobs survive the
+                switch. `contents` keeps this wrapper out of the flex layout while visible. */}
+            <div className={activeTab.contentType === 'terminal' ? 'contents' : 'hidden'}>
               <div className="flex-1 flex h-full overflow-hidden">
                 {IN_ELECTRON && Object.keys(sessions).length > 0 ? (
                   <>
@@ -995,7 +1060,11 @@ export default function App() {
                     {Object.entries(sessions).map(([paneId, session]) => {
                       const isActivePane = paneId === activeTabId;
                       const isSecondary = paneId === 'secondary-split' && isSplitPane;
-                      const visible = isActivePane || isSecondary;
+                      // Panes behind the SFTP/monitor view must report invisible:
+                      // fitting a display:none container would push bogus cols/rows
+                      // to the pty and corrupt the remote screen.
+                      const visible =
+                        activeTab.contentType === 'terminal' && (isActivePane || isSecondary);
                       return (
                         <div
                           key={paneId}
@@ -1076,7 +1145,7 @@ export default function App() {
                   </>
                 )}
               </div>
-            )}
+            </div>
 
             {/* View 2: Full SFTP File Manager Mode */}
             {activeTab.contentType === 'sftp' && (
@@ -1097,7 +1166,8 @@ export default function App() {
             {activeTab.contentType === 'monitor' && (
               <SystemMonitor
                 theme={currentTheme}
-                host={hosts.find((h) => h.id === monitorHostId) ?? activeHost}
+                host={monitorHost}
+                target={monitorTarget}
               />
             )}
           </div>

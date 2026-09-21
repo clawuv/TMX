@@ -7,6 +7,11 @@ type Lang = 'zh-CN' | 'en-US'
 
 const MESSAGES = {
   'zh-CN': {
+    monitorNoCreds: '主机未配置凭据（密码或私钥），无法采集监控数据',
+    monitorSshFailed: '无法连接主机采集监控数据: {reason}',
+    monitorExecFailed: '采集命令执行失败',
+    monitorTimeout: '采集超时',
+    monitorUnsupported: '当前平台暂不支持本机监控',
     noCredentials: '未配置认证凭据（密码或私钥），请在主机管理中补充',
     fetchHttpFailed: '拉取失败: HTTP {status} {statusText}',
     fetchEmpty: '拉取到的内容为空',
@@ -82,6 +87,11 @@ const MESSAGES = {
     menuQuit: '退出',
   },
   'en-US': {
+    monitorNoCreds: 'Host has no credentials (password or private key); cannot collect monitoring data',
+    monitorSshFailed: 'Cannot connect to host for monitoring: {reason}',
+    monitorExecFailed: 'Sampling command failed',
+    monitorTimeout: 'Sampling timed out',
+    monitorUnsupported: 'Local monitoring is not supported on this platform',
     noCredentials: 'No credentials configured (password or private key). Add them in Host management.',
     fetchHttpFailed: 'Fetch failed: HTTP {status} {statusText}',
     fetchEmpty: 'Fetched content is empty',
