@@ -41,12 +41,12 @@ export const SnippetsDrawer: React.FC<SnippetsDrawerProps> = ({
   // New snippet form state
   const [formTitle, setFormTitle] = useState('');
   const [formCommand, setFormCommand] = useState('');
-  const [formCategory, setFormCategory] = useState<QuickSnippet['category']>('System');
+  const [formCategory, setFormCategory] = useState<QuickSnippet['category']>('Linux');
   const [formDesc, setFormDesc] = useState('');
 
   if (!isOpen) return null;
 
-  const categories = ['All', 'System', 'Network', 'Logs'];
+  const categories = ['All', 'Linux', 'Mac', 'Windows'];
 
   const filtered = snippets.filter((s) => {
     const matchesSearch = s.title.toLowerCase().includes(search.toLowerCase()) || s.command.includes(search);
@@ -131,9 +131,9 @@ export const SnippetsDrawer: React.FC<SnippetsDrawerProps> = ({
               className="px-2 py-1.5 rounded bg-black/40 border border-white/10 text-slate-200 outline-none"
               title={t('snippets.category')}
             >
-              <option value="System">System</option>
-              <option value="Network">Network</option>
-              <option value="Logs">Logs</option>
+              <option value="Linux">Linux</option>
+              <option value="Mac">Mac</option>
+              <option value="Windows">Windows</option>
             </select>
           </div>
           <input

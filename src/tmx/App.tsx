@@ -146,6 +146,7 @@ export default function App() {
           snippets: QuickSnippet[] | null;
           preferences: UserPreferences | null;
           themeId: string | null;
+          snippetsSeeded?: boolean;
         };
         if (data.hosts && data.hosts.length > 0) {
           // 'Cloud Edge'/'Homelab' were removed as categories — fold into their successors
@@ -159,7 +160,19 @@ export default function App() {
             }
           } catch {}
         }
-        if (data.snippets && data.snippets.length > 0) setSnippets(data.snippets);
+        if (data.snippets && data.snippets.length > 0) {
+          // Categories became OS-based (Linux/Mac/Windows); fold legacy
+          // type-based categories (System/Network/Logs) into Linux on load.
+          setSnippets(data.snippets.map((s) => ({
+            ...s,
+            category: s.category === 'Mac' || s.category === 'Windows' ? s.category : 'Linux',
+          })));
+        } else if (!data.snippetsSeeded) {
+          // First launch only: seed the built-in sample snippets so the panel
+          // is not empty. Afterwards an intentionally emptied list stays empty.
+          setSnippets(INITIAL_SNIPPETS);
+          void window.ipcRenderer.invoke('db:set-app-state', 'snippets_seeded', '1').catch(() => {});
+        }
         let prefs = data.preferences;
         if (!prefs) {
           // one-time migration from the previous localStorage store
@@ -501,6 +514,8 @@ export default function App() {
       os: '',
       fingerprint: '',
       authMethod: 'Password',
+      // The built-in local entry is always a favorite and cannot be unfavorited.
+      favorite: true,
     }),
     [t],
   );
@@ -522,6 +537,8 @@ export default function App() {
   const { monitorHost, monitorTarget } = useMemo(() => {
     // Browser mode has no sampler; SystemMonitor keeps its simulated dashboard.
     if (!IN_ELECTRON) return { monitorHost: activeHost, monitorTarget: null };
+    // Explicitly pinned local machine (from the Hosts drawer entry).
+    if (monitorHostId === 'local') return { monitorHost: localHost, monitorTarget: { kind: 'local' } as MonitorTarget };
     const pinned = monitorHostId ? hosts.find((h) => h.id === monitorHostId) : undefined;
     if (pinned) return { monitorHost: pinned, monitorTarget: toSshTarget(pinned) };
     if (isLocalTab) return { monitorHost: localHost, monitorTarget: { kind: 'local' } as MonitorTarget };
@@ -787,6 +804,12 @@ export default function App() {
   };
 
   const handleConnectHost = async (host: ConnectionHost) => {
+    // The built-in "local machine" entry opens a local shell tab (whose SFTP
+    // panel browses this machine's filesystem) instead of an SSH dial-out.
+    if (host.id === 'local') {
+      handleNewTab();
+      return;
+    }
     if (!IN_ELECTRON) {
       handleNewTab(host);
       return;
@@ -996,8 +1019,8 @@ export default function App() {
             className={DOCKED_LEFT_DRAWER_CLASS}
             isOpen={true}
             onClose={() => setActiveSidebarNav(null)}
-            hosts={hosts}
-            activeHostId={activeHost.id}
+            hosts={[{ ...localHost, name: t('sftp.localHost') }, ...hosts]}
+            activeHostId={activeTab.hostId}
             onConnectHost={handleConnectHost}
             onAddHost={handleAddHost}
             onToggleFavorite={handleToggleHostBookmark}

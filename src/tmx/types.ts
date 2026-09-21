@@ -204,7 +204,7 @@ export interface QuickSnippet {
   id: string;
   title: string;
   command: string;
-  category: 'System' | 'Network' | 'Logs';
+  category: 'Linux' | 'Mac' | 'Windows';
   description: string;
 }
 

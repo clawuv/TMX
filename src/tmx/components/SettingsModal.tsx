@@ -879,12 +879,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         icon: FlaskConical,
                         color: 'text-cyan-400'
                       },
-                      {
-                        key: 'monitor',
-                        label: t('sidebar.monitor'),
-                        icon: Activity,
-                        color: 'text-rose-400'
-                      },
                     ].map((item) => {
                       const Icon = item.icon;
                       const isVisible = preferences.sidebarVisibleItems[item.key as keyof typeof preferences.sidebarVisibleItems];

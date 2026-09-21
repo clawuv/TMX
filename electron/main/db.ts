@@ -200,12 +200,19 @@ export function registerDbIpc() {
     const snippets = db!.prepare('SELECT * FROM snippets ORDER BY rowid').all() as SnippetPayload[]
     const prefsRow = db!.prepare("SELECT value FROM preferences WHERE key = 'preferences'").get() as { value: string } | undefined
     const themeRow = db!.prepare("SELECT value FROM app_state WHERE key = 'themeId'").get() as { value: string } | undefined
+    const seededRow = db!.prepare("SELECT value FROM app_state WHERE key = 'snippets_seeded'").get() as { value: string } | undefined
     return {
       hosts,
       snippets,
       preferences: prefsRow ? JSON.parse(prefsRow.value) : null,
       themeId: themeRow?.value ?? null,
+      snippetsSeeded: !!seededRow,
     }
+  })
+
+  ipcMain.handle('db:set-app-state', (_event, key: string, value: string) => {
+    initDb()
+    writeAppState(String(key), String(value))
   })
 
   ipcMain.handle('db:save-hosts', (_event, hosts: HostPayload[]) => {

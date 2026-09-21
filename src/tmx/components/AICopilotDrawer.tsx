@@ -109,7 +109,6 @@ export const AICopilotDrawer: React.FC<AICopilotDrawerProps> = ({
           className="flex items-center gap-2 text-[11px] font-mono truncate"
           style={{ color: theme.textSecondary }}
         >
-          <span className="truncate">{t('ai.model', { model: 'deepseek-v4-flash' })}</span>
           <span className="text-emerald-400 shrink-0">{t('common.connected')}</span>
         </div>
       </div>

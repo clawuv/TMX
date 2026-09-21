@@ -77,7 +77,7 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
   if (!isOpen) return null;
 
   // Groups are dynamic: defaults + every group already present on saved hosts.
-  const groups = ['All', ...Array.from(new Set([...DEFAULT_HOST_GROUPS, ...hosts.map((h) => h.group)]))];
+  const groups = ['All', ...Array.from(new Set([...DEFAULT_HOST_GROUPS, ...hosts.map((h) => h.group).filter(Boolean)]))];
 
   const filteredHosts = hosts
     .filter((h) => {
@@ -86,6 +86,9 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
       return matchesSearch && matchesGroup;
     })
     .sort((a, b) => {
+      // The built-in local-machine entry always stays at the top.
+      if (a.id === 'local') return -1;
+      if (b.id === 'local') return 1;
       if (a.favorite && !b.favorite) return -1;
       if (!a.favorite && b.favorite) return 1;
       return a.name.localeCompare(b.name);
@@ -343,6 +346,9 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
         {(() => {
           const renderHost = (h: ConnectionHost) => {
             const isActive = h.id === activeHostId;
+            // The built-in local-machine entry is virtual: connect only — no
+            // edit/delete/favorite/monitor actions and no persisted row.
+            const isVirtual = h.id === 'local';
 
             return (
 
@@ -358,10 +364,12 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
                   { id: 'connect', label: t('hosts.connect') },
                 ];
                 if (onMonitorHost) items.push({ id: 'monitor', label: t('hosts.monitor') });
-                if (onToggleFavorite) items.push({ id: 'favorite', label: h.favorite ? t('hosts.unfavorite') : t('hosts.favorite') });
-                items.push({ id: 'copy-address', label: t('hosts.copyAddress') });
-                if (onDeleteHost) {
-                  items.push({ type: 'separator' }, { id: 'delete', label: t('hosts.remove') });
+                if (!isVirtual) {
+                  if (onToggleFavorite) items.push({ id: 'favorite', label: h.favorite ? t('hosts.unfavorite') : t('hosts.favorite') });
+                  items.push({ id: 'copy-address', label: t('hosts.copyAddress') });
+                  if (onDeleteHost) {
+                    items.push({ type: 'separator' }, { id: 'delete', label: t('hosts.remove') });
+                  }
                 }
                 showContextMenu(items, (id) => {
                   if (id === 'connect') void handleConnect(h);
@@ -389,7 +397,7 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
                 </div>
 
                 <div className="flex items-center gap-1.5">
-                  {onDeleteHost && (
+                  {!isVirtual && onDeleteHost && (
                     <button
                       type="button"
                       onClick={(e) => {
@@ -418,6 +426,16 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
                   )}
 
                   {onToggleFavorite && (
+                    h.id === 'local' ? (
+                      // The local machine is pinned as a favorite; the star is
+                      // display-only and cannot be toggled off.
+                      <span
+                        className="p-1"
+                        title={t('hosts.favorite')}
+                      >
+                        <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                      </span>
+                    ) : (
                     <button
                       type="button"
                       onClick={(e) => {
@@ -431,12 +449,13 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
                         h.favorite ? 'text-amber-400 fill-amber-400' : 'text-slate-500 hover:text-amber-400'
                       }`} />
                     </button>
+                    )
                   )}
                 </div>
               </div>
 
               <div className="text-[11px] text-slate-400 font-mono truncate">
-                {h.user}@{h.host}:{h.port}
+                {isVirtual ? 'user@localhost' : `${h.user}@${h.host}:${h.port}`}
               </div>
             </div>
             );
@@ -446,13 +465,16 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
             return <>{filteredHosts.map(renderHost)}</>;
           }
 
-          const favorites = filteredHosts.filter((h) => h.favorite);
+          const localEntry = filteredHosts.find((h) => h.id === 'local');
+          const savedHosts = filteredHosts.filter((h) => h.id !== 'local');
+          const favorites = savedHosts.filter((h) => h.favorite);
           const sectionGroups = groups
             .filter((g) => g !== 'All')
-            .filter((g) => filteredHosts.some((h) => !h.favorite && h.group === g));
+            .filter((g) => savedHosts.some((h) => !h.favorite && h.group === g));
 
           return (
             <>
+              {localEntry && renderHost(localEntry)}
               {favorites.length > 0 && (
                 <div className="px-2 pt-1 pb-0.5 text-[10px] font-medium tracking-wider text-amber-400/80">
                   {t('hosts.favorites', { count: favorites.length })}
@@ -460,7 +482,7 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
               )}
               {favorites.map(renderHost)}
               {sectionGroups.map((g) => {
-                const members = filteredHosts.filter((h) => !h.favorite && h.group === g);
+                const members = savedHosts.filter((h) => !h.favorite && h.group === g);
                 return (
                   <div key={g}>
                     <div className="px-2 pt-2 pb-0.5 text-[10px] font-medium tracking-wider text-slate-500">

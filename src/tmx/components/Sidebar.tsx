@@ -9,8 +9,7 @@ import {
   Download,
   Info,
   Bookmark,
-  FlaskConical,
-  Activity
+  FlaskConical
 } from 'lucide-react';
 import type { ThemeConfig } from '../types';
 import { useT } from '../i18n/context';
@@ -54,7 +53,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'snippets', label: t('sidebar.snippets'), icon: Bookmark },
     { id: 'ai', label: t('sidebar.ai'), icon: Sparkles, badge: unreadAiSuggestions },
     { id: 'test', label: t('test.title'), icon: FlaskConical },
-    { id: 'monitor', label: t('sidebar.monitor'), icon: Activity },
   ];
 
   const topNavItems = allTopNavItems.filter((item) => {
