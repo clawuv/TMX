@@ -215,6 +215,11 @@ export function registerDbIpc() {
     writeAppState(String(key), String(value))
   })
 
+  ipcMain.handle('db:get-app-state', (_event, key: string) => {
+    initDb()
+    return readAppState(String(key))
+  })
+
   ipcMain.handle('db:save-hosts', (_event, hosts: HostPayload[]) => {
     initDb()
     // Snapshot existing credentials so rows where the renderer omitted them

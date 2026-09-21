@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import type { MonitorProcess, MonitorSample, MonitorTarget, ThemeConfig, ConnectionHost } from '../types';
 import { useT } from '../i18n/context';
+import { showContextMenu } from '../utils/desktop';
 
 interface SystemMonitorProps {
   theme: ThemeConfig;
@@ -285,7 +286,7 @@ export const SystemMonitor: React.FC<SystemMonitorProps> = ({ theme, host, targe
           borderColor: theme.borderSubtle,
         }}
       >
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 min-w-0">
           <div
             className="w-12 h-12 rounded-xl flex items-center justify-center border shadow-inner shrink-0"
             style={{
@@ -297,13 +298,13 @@ export const SystemMonitor: React.FC<SystemMonitorProps> = ({ theme, host, targe
             <Server className="w-6 h-6" />
           </div>
 
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h2 className="text-base font-semibold text-slate-100 font-mono">
+              <h2 className="text-base font-semibold text-slate-100 font-mono truncate">
                 {host.name} ({host.host})
               </h2>
               <span
-                className="px-2 py-0.5 rounded-full text-[10px] font-medium border flex items-center gap-1"
+                className="px-2 py-0.5 rounded-full text-[10px] font-medium border flex items-center gap-1 shrink-0"
                 style={{ backgroundColor: badge.bg, borderColor: badge.border, color: badge.color }}
               >
                 <span
@@ -312,10 +313,25 @@ export const SystemMonitor: React.FC<SystemMonitorProps> = ({ theme, host, targe
                 />
                 {badge.label}
               </span>
+              {live && (
+                <button
+                  type="button"
+                  onClick={retry}
+                  className="p-1 rounded-md border transition-colors hover:opacity-80 shrink-0"
+                  style={{
+                    backgroundColor: theme.bgInput,
+                    borderColor: theme.borderSubtle,
+                    color: theme.textSecondary,
+                  }}
+                  title={t('monitor.retry')}
+                >
+                  <RefreshCw className={`w-3 h-3 ${waiting ? 'animate-spin' : ''}`} />
+                </button>
+              )}
             </div>
 
             <p className="text-xs text-slate-400 mt-1 flex items-center gap-3 flex-wrap">
-              <span>{t('monitor.os')}: {view.os || '—'}{view.kernel ? ` · ${view.kernel}` : ''}</span>
+              <span>{t('monitor.os')}: {view.os || '—'}{view.kernel && view.kernel !== view.os ? ` · ${view.kernel}` : ''}</span>
               <span>•</span>
               <span>{t('monitor.latency')}: {view.rttMs}ms</span>
               <span>•</span>
@@ -327,7 +343,7 @@ export const SystemMonitor: React.FC<SystemMonitorProps> = ({ theme, host, targe
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <div
             className="px-3 py-1.5 rounded-lg border text-xs font-mono"
             style={{
@@ -335,28 +351,13 @@ export const SystemMonitor: React.FC<SystemMonitorProps> = ({ theme, host, targe
               borderColor: theme.borderSubtle,
             }}
           >
-            {t('monitor.loadAvg')}:{' '}
-            <span className="text-emerald-400 font-semibold">
+            <div className="text-[10px] text-slate-400 leading-tight">{t('monitor.loadAvg')}</div>
+            <div className="text-emerald-400 font-semibold whitespace-nowrap">
               {view.loadAvg
-                ? view.loadAvg.map((n) => n.toFixed(2)).join(', ')
+                ? view.loadAvg.map((n) => n.toFixed(2)).join(' / ')
                 : t('monitor.notAvailable')}
-            </span>
+            </div>
           </div>
-          {live && (
-            <button
-              type="button"
-              onClick={retry}
-              className="p-2 rounded-lg border transition-colors hover:opacity-80"
-              style={{
-                backgroundColor: theme.bgInput,
-                borderColor: theme.borderSubtle,
-                color: theme.textSecondary,
-              }}
-              title={t('monitor.retry')}
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${waiting ? 'animate-spin' : ''}`} />
-            </button>
-          )}
         </div>
       </div>
 
@@ -599,7 +600,20 @@ export const SystemMonitor: React.FC<SystemMonitorProps> = ({ theme, host, targe
                         <span className="text-slate-600">—</span>
                       )}
                     </td>
-                    <td className="px-5 py-2.5 text-slate-200 truncate max-w-md" title={proc.command}>
+                    <td
+                      className="px-5 py-2.5 text-slate-200 truncate max-w-0 w-full"
+                      title={proc.command}
+                      onContextMenu={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        showContextMenu(
+                          [{ id: 'copy', label: t('common.copy') }],
+                          (id) => {
+                            if (id === 'copy') void navigator.clipboard.writeText(proc.command);
+                          },
+                        );
+                      }}
+                    >
                       {proc.command}
                     </td>
                   </tr>

@@ -181,6 +181,25 @@ export default function App() {
             if (saved) prefs = { ...DEFAULT_PREFERENCES, ...JSON.parse(saved) };
           } catch {}
         }
+        // One-time fold: Copilot / API batch testing now default to hidden in
+        // the sidebar. Run exactly once so later explicit toggles stick.
+        try {
+          const folded = await window.ipcRenderer.invoke('db:get-app-state', 'sidebar_defaults_v2');
+          if (!folded) {
+            if (prefs) {
+              prefs = {
+                ...prefs,
+                sidebarVisibleItems: {
+                  ...DEFAULT_PREFERENCES.sidebarVisibleItems,
+                  ...(prefs.sidebarVisibleItems ?? {}),
+                  ai: false,
+                  test: false,
+                },
+              };
+            }
+            void window.ipcRenderer.invoke('db:set-app-state', 'sidebar_defaults_v2', '1').catch(() => {});
+          }
+        } catch {}
         if (prefs) setPreferences({ ...DEFAULT_PREFERENCES, ...prefs });
         let themeId = data.themeId;
         if (!themeId) themeId = localStorage.getItem('tmx_theme');

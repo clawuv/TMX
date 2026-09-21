@@ -283,9 +283,10 @@ export const DEFAULT_PREFERENCES: UserPreferences = {
     hosts: true,
     sftp: true,
     snippets: true,
-    ai: true,
+    // Copilot and API batch testing are opt-in: hidden until enabled in settings.
+    ai: false,
     monitor: true,
-    test: true,
+    test: false,
   },
   sidebarPosition: 'left',
   sidebarCompact: false,
