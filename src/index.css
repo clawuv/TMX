@@ -106,31 +106,8 @@
 }
 
 /* Soft depth separates the chrome without a high-contrast outline. */
-.soft-chrome {
-  --chrome-shadow: rgba(0, 0, 0, 0.18);
-  --chrome-highlight: rgba(255, 255, 255, 0.025);
-}
-
-.soft-chrome.theme-light {
-  --chrome-shadow: rgba(30, 41, 59, 0.08);
-  --chrome-highlight: rgba(255, 255, 255, 0.5);
-}
-
-.soft-chrome #titlebar-integrated-header {
-  box-shadow: inset 0 1px 0 var(--chrome-highlight), 0 2px 6px var(--chrome-shadow);
-}
-
-.soft-chrome #global-sidebar-navigation {
-  box-shadow: 2px 0 6px var(--chrome-shadow);
-}
-
-.soft-chrome #desktop-status-bar {
-  box-shadow: 0 -2px 6px var(--chrome-shadow);
-}
-
 .soft-chrome .soft-dock {
   z-index: 11;
-  box-shadow: 3px 0 8px var(--chrome-shadow);
 }
 
 .window-caption-button {
@@ -183,7 +160,7 @@
   color: #fff;
 }
 
-/* Hover elevation for inactive top tabs & sidebar nav icons (theme colors via CSS vars) */
+/* Hover highlight for inactive top tabs & sidebar nav icons (theme colors via CSS vars) */
 .tab-item {
   background-color: transparent;
   border-color: transparent;
@@ -192,7 +169,6 @@
 .tab-item:hover {
   background-color: var(--hover-bg);
   border-color: var(--hover-border);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .sidebar-nav-item {
@@ -201,13 +177,11 @@
 
 .sidebar-nav-item:hover {
   background-color: var(--hover-bg);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
-/* Shared hover elevation for toolbar controls (theme colors via CSS vars) */
+/* Shared hover highlight for toolbar controls (theme colors via CSS vars) */
 .hover-elevate:hover {
   background-color: var(--hover-bg, rgba(255, 255, 255, 0.05));
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 /* Sleek minimalist scrollbar */
@@ -235,10 +209,9 @@
   -webkit-backdrop-filter: blur(24px) saturate(180%);
 }
 
-/* SFTP file rows: light hover lift with shadow (whole row, not just the actions chip) */
+/* SFTP file rows: light hover lift (whole row, not just the actions chip) */
 .sftp-file-row:hover {
   background-color: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Light theme (Cloud Mist): flip the hardcoded slate text scale & input overlays.

@@ -42,7 +42,7 @@ export const PaletteDesignModal: React.FC<PaletteDesignModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-4xl max-h-[90vh] flex flex-col rounded-2xl border shadow-2xl overflow-hidden text-slate-200"
+        className="relative w-full max-w-4xl max-h-[90vh] flex flex-col rounded-2xl border overflow-hidden text-slate-200"
         style={{
           backgroundColor: currentTheme.bgSurface,
           borderColor: currentTheme.borderHover,
@@ -58,7 +58,7 @@ export const PaletteDesignModal: React.FC<PaletteDesignModalProps> = ({
         >
           <div className="flex items-center gap-3">
             <div 
-              className="w-9 h-9 rounded-xl flex items-center justify-center border shadow-inner"
+              className="w-9 h-9 rounded-xl flex items-center justify-center border"
               style={{
                 backgroundColor: currentTheme.bgActive,
                 borderColor: currentTheme.borderHover,
@@ -121,7 +121,7 @@ export const PaletteDesignModal: React.FC<PaletteDesignModalProps> = ({
                     style={{
                       backgroundColor: th.bgBase,
                       borderColor: isSelected ? th.accentPrimary : th.borderSubtle,
-                      boxShadow: isSelected ? `0 0 0 1px ${th.accentPrimary}, 0 4px 12px rgba(0,0,0,0.4)` : 'none',
+                      boxShadow: isSelected ? `0 0 0 1px ${th.accentPrimary}` : 'none',
                     }}
                   >
                     {/* Top title & badge */}
@@ -194,7 +194,7 @@ export const PaletteDesignModal: React.FC<PaletteDesignModalProps> = ({
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span 
-                      className="w-5 h-5 rounded-md border border-white/20 shadow-sm"
+                      className="w-5 h-5 rounded-md border border-white/20"
                       style={{ backgroundColor: token.hex.startsWith('#') ? token.hex : currentTheme.borderHover }}
                     />
                     <span className="text-[10px] text-slate-400 group-hover:text-slate-200">
@@ -244,7 +244,7 @@ export const PaletteDesignModal: React.FC<PaletteDesignModalProps> = ({
                     className="p-1.5 rounded-lg border border-white/5 bg-black/20 hover:border-white/20 cursor-pointer text-center group"
                   >
                     <div 
-                      className="w-full h-4 rounded mb-1 shadow-sm"
+                      className="w-full h-4 rounded mb-1"
                       style={{ backgroundColor: item.hex }}
                     />
                     <div className="text-[10px] font-medium text-slate-300 truncate">{item.name}</div>
@@ -320,7 +320,7 @@ export const PaletteDesignModal: React.FC<PaletteDesignModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white transition-opacity hover:opacity-90 shadow-md"
+            className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white transition-opacity hover:opacity-90"
             style={{ backgroundColor: currentTheme.accentPrimary, color: '#0B0F19' }}
           >
             应用并返回工作台

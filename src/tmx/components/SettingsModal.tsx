@@ -385,7 +385,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       }}
     >
       <div 
-        className="w-full max-w-2xl h-[500px] max-h-[85vh] rounded-2xl border shadow-2xl overflow-hidden flex flex-col text-slate-200"
+        className="w-full max-w-2xl h-[500px] max-h-[85vh] rounded-2xl border overflow-hidden flex flex-col text-slate-200"
         style={{
           backgroundColor: theme.bgSurface,
           borderColor: theme.borderHover,
@@ -473,7 +473,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         title={tab.desc}
                         className={`w-full flex items-center gap-2 px-2.5 py-1 rounded-lg text-[11px] font-medium text-left transition-all ${
                           isActive
-                            ? 'text-white shadow-sm font-semibold'
+                            ? 'text-white font-semibold'
                             : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
                         }`}
                         style={{
@@ -924,7 +924,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                             style={{ backgroundColor: isVisible ? theme.accentSuccess : theme.borderHover }}
                           >
                             <div
-                              className="w-4 h-4 rounded-full shadow-sm transition-transform"
+                              className="w-4 h-4 rounded-full transition-transform"
                               style={{
                                 backgroundColor: '#FFFFFF',
                                 transform: isVisible ? 'translateX(16px)' : 'translateX(0)',
@@ -1317,7 +1317,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </button>
             <button
               onClick={onClose}
-              className="px-5 py-1 rounded-md text-[11px] font-semibold text-slate-950 transition-all hover:opacity-90 shadow-md"
+              className="px-5 py-1 rounded-md text-[11px] font-semibold text-slate-950 transition-all hover:opacity-90"
               style={{ backgroundColor: theme.accentPrimary }}
             >
               {t('settings.finish')}

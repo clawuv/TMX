@@ -379,7 +379,7 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
                   else if (id === 'delete') onDeleteHost?.(h.id);
                 });
               }}
-              className="p-2.5 rounded-xl border cursor-pointer transition-all duration-150 group hover:shadow-lg hover:shadow-black/30"
+              className="p-2.5 rounded-xl border cursor-pointer transition-all duration-150 group"
               style={{
                 backgroundColor: isActive ? theme.bgActive : 'transparent',
                 borderColor: isActive ? theme.borderHover : theme.borderSubtle,

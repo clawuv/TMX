@@ -142,7 +142,6 @@ export const TitleBar: React.FC<TitleBarProps> = ({
                   ? {
                       backgroundColor: theme.bgActive,
                       borderColor: theme.borderHover,
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
                     }
                   : ({
                       '--hover-bg': theme.bgActive,

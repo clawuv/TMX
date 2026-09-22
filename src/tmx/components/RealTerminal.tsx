@@ -309,7 +309,7 @@ export function RealTerminal({
       {/* ZMODEM transfer overlay */}
       {transfers.length > 0 && (
         <div
-          className="absolute right-3 bottom-3 left-3 z-30 rounded-xl border shadow-2xl overflow-hidden"
+          className="absolute right-3 bottom-3 left-3 z-30 rounded-xl border overflow-hidden"
           style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderHover }}
         >
           <div
@@ -375,7 +375,7 @@ export function RealTerminal({
 
       {zmToast && (
         <div
-          className="absolute top-3 left-1/2 -translate-x-1/2 z-30 px-3 py-1.5 rounded-lg border shadow-xl text-[11px] max-w-[80%] truncate"
+          className="absolute top-3 left-1/2 -translate-x-1/2 z-30 px-3 py-1.5 rounded-lg border text-[11px] max-w-[80%] truncate"
           style={{
             backgroundColor: theme.bgSurface,
             borderColor: zmToast.kind === 'err' ? theme.accentError : theme.borderHover,

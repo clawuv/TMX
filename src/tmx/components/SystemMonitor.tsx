@@ -288,7 +288,7 @@ export const SystemMonitor: React.FC<SystemMonitorProps> = ({ theme, host, targe
       >
         <div className="flex items-center gap-4 min-w-0">
           <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center border shadow-inner shrink-0"
+            className="w-12 h-12 rounded-xl flex items-center justify-center border shrink-0"
             style={{
               backgroundColor: theme.bgActive,
               borderColor: theme.borderHover,

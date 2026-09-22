@@ -1137,7 +1137,7 @@ export default function App() {
                             >
                               <button
                                 onClick={() => void handleReconnectPane(paneId)}
-                                className="px-4 py-1.5 rounded-lg border text-xs font-semibold shadow-lg transition-opacity hover:opacity-90"
+                                className="px-4 py-1.5 rounded-lg border text-xs font-semibold transition-opacity hover:opacity-90"
                                 style={{
                                   backgroundColor: currentTheme.accentPrimary,
                                   borderColor: currentTheme.accentPrimary,
@@ -1216,7 +1216,7 @@ export default function App() {
 
       {/* Session log saved toast */}
       {logToast && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-xl border shadow-2xl text-xs animate-in fade-in"
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-xl border text-xs animate-in fade-in"
           style={{ backgroundColor: currentTheme.bgSurface, borderColor: currentTheme.borderHover, color: currentTheme.textPrimary }}>
           {logToast}
         </div>
@@ -1261,7 +1261,7 @@ export default function App() {
       {mcpConfirm && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
           <div
-            className="w-full max-w-md rounded-2xl border shadow-2xl overflow-hidden"
+            className="w-full max-w-md rounded-2xl border overflow-hidden"
             style={{ backgroundColor: currentTheme.bgSurface, borderColor: currentTheme.borderHover }}
           >
             <div
@@ -1296,7 +1296,7 @@ export default function App() {
               </button>
               <button
                 onClick={() => respondMcpConfirm(true)}
-                className="px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-950 shadow-md hover:opacity-90 transition-opacity"
+                className="px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-950 hover:opacity-90 transition-opacity"
                 style={{ backgroundColor: currentTheme.accentPrimary }}
               >
                 {t('app.mcpAllow')}

@@ -111,7 +111,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {/* Tooltip on hover */}
               {showTooltip && (
               <div 
-                className="absolute left-14 ml-2 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 shadow-xl border backdrop-mica"
+                className="absolute left-14 ml-2 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 border backdrop-mica"
                 style={{
                   backgroundColor: theme.bgSurface,
                   color: theme.textPrimary,
@@ -148,7 +148,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               />
             </button>
             <div
-              className="absolute left-14 ml-2 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 shadow-xl border backdrop-mica"
+              className="absolute left-14 ml-2 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 border backdrop-mica"
               style={{
                 backgroundColor: theme.bgSurface,
                 color: theme.textPrimary,
@@ -182,7 +182,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </button>
 
               {showTooltip && <div
-                className="absolute left-14 ml-2 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 shadow-xl border backdrop-mica"
+                className="absolute left-14 ml-2 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 border backdrop-mica"
                 style={{
                   backgroundColor: theme.bgSurface,
                   color: theme.textPrimary,

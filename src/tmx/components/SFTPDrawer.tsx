@@ -874,7 +874,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
                     {/* Hover: 更多 button; actions open in a dropdown */}
                     <div
                       className="absolute right-1 top-1/2 -translate-y-1/2 hidden group-hover:flex items-center rounded-md px-1 py-0.5"
-                      style={{ backgroundColor: theme.bgBase, boxShadow: '0 4px 12px rgba(0, 0, 0, 0.35)' }}
+                      style={{ backgroundColor: theme.bgBase }}
                       onMouseDown={(e) => e.stopPropagation()}
                       onClick={(e) => e.stopPropagation()}
                     >
@@ -889,7 +889,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
 
                     {menuFileId === file.id && (
                       <div
-                        className="absolute right-1 top-full mt-1 z-40 w-36 rounded-lg border py-1 shadow-xl"
+                        className="absolute right-1 top-full mt-1 z-40 w-36 rounded-lg border py-1"
                         style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderHover }}
                         onMouseDown={(e) => e.stopPropagation()}
                         onClick={(e) => e.stopPropagation()}
@@ -1099,7 +1099,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-sm rounded-xl border shadow-2xl p-4 text-slate-200 space-y-3"
+            className="w-full max-w-sm rounded-xl border p-4 text-slate-200 space-y-3"
             style={{
               backgroundColor: theme.bgSurface,
               borderColor: theme.borderHover,
@@ -1174,7 +1174,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
       {previewFile && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
-            className="w-full max-w-3xl max-h-[85vh] flex flex-col rounded-2xl border shadow-2xl overflow-hidden"
+            className="w-full max-w-3xl max-h-[85vh] flex flex-col rounded-2xl border overflow-hidden"
             style={{
               backgroundColor: theme.bgSurface,
               borderColor: theme.borderHover,
@@ -1263,7 +1263,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
                 {isEditing && !previewLoading && (
                   <button
                     onClick={() => void handleSaveFileContent()}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium text-slate-950 transition-opacity hover:opacity-90 shadow-sm"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium text-slate-950 transition-opacity hover:opacity-90"
                     style={{ backgroundColor: theme.accentPrimary }}
                   >
                     <Save className="w-3.5 h-3.5" />
