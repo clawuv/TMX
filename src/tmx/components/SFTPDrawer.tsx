@@ -592,7 +592,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
             }`
       }
       style={{
-        backgroundColor: theme.bgSurface,
+        backgroundColor: theme.bgCanvas,
         borderColor: theme.borderSubtle,
       }}
       onDragOver={(e) => {
@@ -636,7 +636,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
       <div
         className="flex items-center justify-between h-10 px-3 border-b shrink-0"
         style={{
-          backgroundColor: theme.bgBase,
+          backgroundColor: theme.bgSurface,
           borderColor: theme.borderSubtle,
         }}
       >

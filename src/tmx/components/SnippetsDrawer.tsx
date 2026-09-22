@@ -80,10 +80,10 @@ export const SnippetsDrawer: React.FC<SnippetsDrawerProps> = ({
   };
 
   return (
-    <div 
+    <div
       className={className || "w-[320px] shrink-0 h-full flex flex-col border-r select-none transition-colors duration-150 z-20"}
       style={{
-        backgroundColor: theme.bgSurface,
+        backgroundColor: theme.bgCanvas,
         borderColor: theme.borderSubtle,
       }}
     >
@@ -91,7 +91,7 @@ export const SnippetsDrawer: React.FC<SnippetsDrawerProps> = ({
       <div 
         className="flex items-center justify-between h-10 px-3 border-b shrink-0"
         style={{
-          backgroundColor: theme.bgBase,
+          backgroundColor: theme.bgSurface,
           borderColor: theme.borderSubtle,
         }}
       >
