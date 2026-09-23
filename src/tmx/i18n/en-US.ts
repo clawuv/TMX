@@ -5,6 +5,8 @@ const enUS: Dictionary = {
   common: {
     cancel: 'Cancel',
     confirm: 'Confirm',
+    confirmTitle: 'Please confirm',
+    notice: 'Notice',
     save: 'Save',
     close: 'Close',
     delete: 'Delete',
@@ -28,6 +30,11 @@ const enUS: Dictionary = {
     mcpDeny: 'Deny',
     logSaved: 'Session log saved: {path}',
     splitPane: 'Split pane terminal',
+    closeOthersConfirm: 'This will close {count} tab(s) with live sessions and terminate their remote processes. Continue?',
+    quitConfirmTitle: 'Quit TMX',
+    quitConfirmMessage: 'Active SSH sessions are still open',
+    quitConfirmDetail: '{count} active SSH session(s). Quitting will disconnect them all.',
+    quitConfirmAction: 'Quit anyway',
   },
   titleBar: {
     more: 'More actions',

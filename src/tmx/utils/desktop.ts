@@ -2,13 +2,15 @@
 // process. Every helper degrades gracefully in a plain browser (dev server /
 // Playwright) so the same components work in both environments.
 
+import { hasConfirmHost, requestConfirm } from './confirm'
+
 export function isElectron(): boolean {
   return typeof window !== 'undefined' && typeof window.ipcRenderer !== 'undefined'
 }
 
 const ip = () => window.ipcRenderer
 
-// ── Native dialogs ───────────────────────────────────────────────────────────
+// ── Dialogs ──────────────────────────────────────────────────────────────────
 
 export interface ConfirmOptions {
   title?: string
@@ -19,7 +21,13 @@ export interface ConfirmOptions {
   danger?: boolean
 }
 
+/**
+ * Ask the user to confirm. Prefers the in-app themed dialog (the OS message box
+ * reads as a web-page dialog in a desktop shell) and only falls back to the native
+ * box when no host is mounted.
+ */
 export async function nativeConfirm(opts: ConfirmOptions): Promise<boolean> {
+  if (hasConfirmHost()) return requestConfirm(opts)
   if (!isElectron()) {
     const text = opts.detail ? `${opts.message}\n\n${opts.detail}` : opts.message
     return typeof window !== 'undefined' ? window.confirm(text) : false
@@ -32,6 +40,10 @@ export async function nativeConfirm(opts: ConfirmOptions): Promise<boolean> {
 }
 
 export async function nativeMessage(opts: { message: string; detail?: string; title?: string; danger?: boolean }): Promise<void> {
+  if (hasConfirmHost()) {
+    await requestConfirm({ ...opts, kind: 'notice' })
+    return
+  }
   if (!isElectron()) {
     if (typeof window !== 'undefined') window.alert(opts.detail ? `${opts.message}\n\n${opts.detail}` : opts.message)
     return

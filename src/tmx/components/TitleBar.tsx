@@ -91,6 +91,12 @@ export const TitleBar: React.FC<TitleBarProps> = ({
         backgroundColor: theme.bgSurface,
         borderColor: theme.borderSubtle,
       }}
+      // The toolbar has no context menu of its own, and stopPropagation keeps the
+      // global selection fallback from popping the native OS menu here.
+      onContextMenu={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
     >
       {/* Left: App Brand (drag handle) */}
       <div className="flex items-center gap-3 shrink-0">

@@ -70,6 +70,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <aside
       id="global-sidebar-navigation"
       className="app-region-drag w-14 shrink-0 flex flex-col justify-between items-center py-3 border-r select-none z-10 transition-colors duration-200"
+      // No context menu on the nav rail; stopPropagation also keeps the global
+      // selection fallback from popping the native OS menu over it.
+      onContextMenu={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
       style={{
         backgroundColor: theme.bgSurface,
         borderColor: theme.borderSubtle,

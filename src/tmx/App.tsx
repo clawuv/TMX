@@ -13,6 +13,7 @@ import { TerminalCanvas } from './components/TerminalCanvas';
 import { RealTerminal } from './components/RealTerminal';
 import { SFTPDrawer } from './components/SFTPDrawer';
 import { SystemMonitor } from './components/SystemMonitor';
+import { ConfirmDialog } from './components/ConfirmDialog';
 import { CommandPalette } from './components/CommandPalette';
 import { PaletteDesignModal } from './components/PaletteDesignModal';
 import { HostDrawer } from './components/HostDrawer';
@@ -23,7 +24,7 @@ import { SettingsModal } from './components/SettingsModal';
 import { StatusBar } from './components/StatusBar';
 import { I18nProvider, useI18n } from './i18n/context';
 import { ResizableDock } from './components/ResizableDock';
-import { onMenuAction, setWindowTitle, type MenuAction } from './utils/desktop';
+import { onMenuAction, setWindowTitle, nativeConfirm, type MenuAction } from './utils/desktop';
 import { initUpdateBridge } from './utils/updateState';
 import { useNativeContextMenu } from './utils/useNativeContextMenu';
 
@@ -412,6 +413,22 @@ export default function App() {
     return unsubscribe;
   }, []);
 
+  // Main asks before dropping live SSH sessions on close; the prompt is drawn by the
+  // themed in-app dialog rather than the OS message box.
+  useEffect(() => {
+    if (!IN_ELECTRON) return;
+    return window.ipcRenderer.on('app:confirm-quit', (...args) => {
+      const count = (args[0] as { count?: number } | undefined)?.count ?? 0;
+      void nativeConfirm({
+        title: t('app.quitConfirmTitle'),
+        message: t('app.quitConfirmMessage'),
+        detail: t('app.quitConfirmDetail', { count }),
+        confirmLabel: t('app.quitConfirmAction'),
+        danger: true,
+      }).then((ok) => window.ipcRenderer.send('app:confirm-quit-response', ok));
+    });
+  }, [t]);
+
   const respondMcpConfirm = (allowed: boolean) => {
     if (!mcpConfirm) return;
     void window.ipcRenderer.invoke('mcp:confirm-response', { reqId: mcpConfirm.reqId, allowed });
@@ -669,9 +686,21 @@ export default function App() {
     void createLocalSession(newTabId);
   };
 
-  const handleCloseOtherTabs = (id: string) => {
+  // Closing every other tab at once is destructive: it kills their sessions and
+  // scrollback, so it asks first (honouring the "warn on close" preference).
+  const handleCloseOtherTabs = async (id: string) => {
     const keep = tabs.find((t) => t.id === id);
     if (!keep) return;
+    const liveOthers = tabs.filter(
+      (tab) => tab.id !== id && sessions[tab.id] && !sessions[tab.id].exited
+    ).length;
+    if (liveOthers > 0 && preferences.warnOnCloseSession) {
+      const ok = await nativeConfirm({
+        message: t('app.closeOthersConfirm', { count: liveOthers }),
+        danger: true,
+      });
+      if (!ok) return;
+    }
     for (const tab of tabs) {
       if (tab.id !== id) {
         const session = sessions[tab.id];
@@ -1248,6 +1277,9 @@ export default function App() {
         onOpenPaletteModal={() => setIsPaletteModalOpen(true)}
         onOpenSettings={() => openSettings()}
       />
+
+      {/* Themed replacement for the OS confirm/notice message box */}
+      <ConfirmDialog theme={currentTheme} />
 
       {/* Dedicated Color Scheme & Design Spec Studio Modal */}
       <PaletteDesignModal
