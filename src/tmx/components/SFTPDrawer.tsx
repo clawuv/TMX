@@ -587,7 +587,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
       className={
         className
           ? className
-          : `flex flex-col rounded-md border h-full select-none transition-colors duration-150 relative ${
+          : `flex flex-col rounded-lg border overflow-hidden h-full select-none transition-colors duration-150 relative ${
               mode === 'docked' ? 'w-[320px] shrink-0 z-20' : 'w-full flex-1'
             }`
       }

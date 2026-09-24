@@ -40,8 +40,10 @@ const TEST_DOCK_WIDTH_STORAGE_KEY = 'tmx_test_dock_width_pct_v2';
 // Unified drawer visual layout for modern minimalist alignment.
 // Width is owned by the ResizableDock wrapper (min 280px, user-draggable,
 // scales with the window); drawers just fill it.
-const DOCKED_LEFT_DRAWER_CLASS = "flex-1 min-w-0 h-full flex flex-col rounded-lg border select-none transition-colors duration-150 z-20";
-const DOCKED_RIGHT_DRAWER_CLASS = "w-[320px] shrink-0 h-full flex flex-col rounded-lg border select-none transition-colors duration-150 z-20";
+// overflow-hidden is required: the full-bleed drawer headers would otherwise
+// paint square corners over the rounded card edge (visible in light themes).
+const DOCKED_LEFT_DRAWER_CLASS = "flex-1 min-w-0 h-full flex flex-col rounded-lg border overflow-hidden select-none transition-colors duration-150 z-20";
+const DOCKED_RIGHT_DRAWER_CLASS = "w-[320px] shrink-0 h-full flex flex-col rounded-lg border overflow-hidden select-none transition-colors duration-150 z-20";
 
 const IN_ELECTRON = typeof window !== 'undefined' && typeof window.ipcRenderer !== 'undefined';
 const LOCAL_TERMINAL_LABEL = 'user@localhost';
