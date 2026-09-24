@@ -961,6 +961,14 @@ export default function App() {
     />
   )
 
+  // Mirrors the conditions under which a left ResizableDock actually renders.
+  const leftDrawerOpen =
+    activeSidebarNav === 'ai' ||
+    activeSidebarNav === 'hosts' ||
+    activeSidebarNav === 'snippets' ||
+    activeSidebarNav === 'test' ||
+    ((activeSidebarNav === 'sftp' || dockedSftpOpen) && activeTab.contentType !== 'sftp');
+
   return (
     <I18nProvider languagePref={preferences.language}>
     <div 
@@ -1109,9 +1117,13 @@ export default function App() {
           </ResizableDock>
         )}
 
-        {/* Center Main Stage */}
+        {/* Center Main Stage. The left gap only exists to separate the stage card
+            from an open drawer card; with everything collapsed the rail already
+            provides the visual break, so drop the margin to avoid a dead strip. */}
         <div
-          className="flex-1 flex flex-col overflow-hidden min-w-0 rounded-md border ml-1.5"
+          className={`flex-1 flex flex-col overflow-hidden min-w-0 rounded-md border ${
+            leftDrawerOpen ? 'ml-1.5' : ''
+          }`}
           style={{ backgroundColor: currentTheme.bgCanvas, borderColor: currentTheme.borderSubtle }}
         >
 
