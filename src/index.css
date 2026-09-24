@@ -176,7 +176,8 @@
 }
 
 .sidebar-nav-item:hover {
-  background-color: var(--hover-bg);
+  /* Desktop-feel hover: a soft wash instead of the full active fill */
+  background-color: color-mix(in srgb, var(--hover-bg) 45%, transparent);
 }
 
 /* Shared hover highlight for toolbar controls (theme colors via CSS vars) */

@@ -100,7 +100,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 }}
                 aria-label={item.label}
               >
-                <Icon className="w-5 h-5 transition-transform duration-150 group-hover:scale-110" />
+                <Icon className="w-5 h-5" />
 
                 {/* Optional Breathing Light Badge for AI / Notifications */}
                 {item.badge && !isActive && (
@@ -145,7 +145,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               }}
               aria-label={t('sidebar.updateAvailable')}
             >
-              <Download className="w-5 h-5 transition-transform duration-150 group-hover:scale-110" />
+              <Download className="w-5 h-5" />
               <span
                 className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-slate-900 animate-pulse"
               />
@@ -181,7 +181,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 }}
                 aria-label={item.label}
               >
-                <Icon className="w-5 h-5 transition-transform duration-150 group-hover:scale-110" />
+                <Icon className="w-5 h-5" />
               </button>
 
               {showTooltip && <div

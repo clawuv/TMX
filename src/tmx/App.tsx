@@ -40,8 +40,8 @@ const TEST_DOCK_WIDTH_STORAGE_KEY = 'tmx_test_dock_width_pct_v2';
 // Unified drawer visual layout for modern minimalist alignment.
 // Width is owned by the ResizableDock wrapper (min 280px, user-draggable,
 // scales with the window); drawers just fill it.
-const DOCKED_LEFT_DRAWER_CLASS = "flex-1 min-w-0 h-full flex flex-col rounded-md border select-none transition-colors duration-150 z-20";
-const DOCKED_RIGHT_DRAWER_CLASS = "w-[320px] shrink-0 h-full flex flex-col rounded-md border select-none transition-colors duration-150 z-20";
+const DOCKED_LEFT_DRAWER_CLASS = "flex-1 min-w-0 h-full flex flex-col rounded-lg border select-none transition-colors duration-150 z-20";
+const DOCKED_RIGHT_DRAWER_CLASS = "w-[320px] shrink-0 h-full flex flex-col rounded-lg border select-none transition-colors duration-150 z-20";
 
 const IN_ELECTRON = typeof window !== 'undefined' && typeof window.ipcRenderer !== 'undefined';
 const LOCAL_TERMINAL_LABEL = 'user@localhost';
@@ -1121,7 +1121,7 @@ export default function App() {
             from an open drawer card; with everything collapsed the rail already
             provides the visual break, so drop the margin to avoid a dead strip. */}
         <div
-          className={`flex-1 flex flex-col overflow-hidden min-w-0 rounded-md border ${
+          className={`flex-1 flex flex-col overflow-hidden min-w-0 rounded-lg border ${
             leftDrawerOpen ? 'ml-1.5' : ''
           }`}
           style={{ backgroundColor: currentTheme.bgCanvas, borderColor: currentTheme.borderSubtle }}
