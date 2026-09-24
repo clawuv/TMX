@@ -91,12 +91,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div key={item.id} className="relative group w-full flex items-center justify-center">
               <button
                 onClick={() => onSelectNav(item.id)}
-                className={`app-region-no-drag relative w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-150 ${isActive ? '' : 'sidebar-nav-item'}`}
+                className={`app-region-no-drag relative w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-150 border ${isActive ? '' : 'sidebar-nav-item'}`}
                 style={{
                   color: isActive ? theme.accentPrimary : theme.textSecondary,
                   ...(isActive
-                    ? { backgroundColor: theme.bgActive }
-                    : ({ '--hover-bg': theme.bgActive } as React.CSSProperties)),
+                    ? { backgroundColor: theme.bgActive, borderColor: theme.borderHover }
+                    : ({ '--hover-bg': theme.bgActive, '--hover-border': theme.borderHover } as React.CSSProperties)),
                 }}
                 aria-label={item.label}
               >
@@ -138,10 +138,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="relative group w-full flex items-center justify-center">
             <button
               onClick={() => onOpenUpdates?.()}
-              className="app-region-no-drag relative w-9 h-9 rounded-xl flex items-center justify-center sidebar-nav-item transition-all duration-150"
+              className="app-region-no-drag relative w-9 h-9 rounded-lg flex items-center justify-center sidebar-nav-item transition-all duration-150 border"
               style={{
                 color: theme.accentPrimary,
-                ...({ '--hover-bg': theme.bgActive } as React.CSSProperties),
+                ...({ '--hover-bg': theme.bgActive, '--hover-border': theme.borderHover } as React.CSSProperties),
               }}
               aria-label={t('sidebar.updateAvailable')}
             >
@@ -172,12 +172,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div key={item.id} className="relative group w-full flex items-center justify-center">
               <button
                 onClick={() => onSelectNav(item.id)}
-                className={`app-region-no-drag w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-150 ${isActive ? '' : 'sidebar-nav-item'}`}
+                className={`app-region-no-drag w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-150 border ${isActive ? '' : 'sidebar-nav-item'}`}
                 style={{
                   color: isActive ? theme.accentPrimary : theme.textSecondary,
                   ...(isActive
-                    ? { backgroundColor: theme.bgActive }
-                    : ({ '--hover-bg': theme.bgActive } as React.CSSProperties)),
+                    ? { backgroundColor: theme.bgActive, borderColor: theme.borderHover }
+                    : ({ '--hover-bg': theme.bgActive, '--hover-border': theme.borderHover } as React.CSSProperties)),
                 }}
                 aria-label={item.label}
               >

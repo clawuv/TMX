@@ -171,13 +171,16 @@
   border-color: var(--hover-border);
 }
 
+/* Sidebar nav icons mirror the top tab treatment: invisible pill outline that
+   fills with the theme hover background + border on hover. */
 .sidebar-nav-item {
   background-color: transparent;
+  border-color: transparent;
 }
 
 .sidebar-nav-item:hover {
-  /* Desktop-feel hover: a soft wash instead of the full active fill */
-  background-color: color-mix(in srgb, var(--hover-bg) 45%, transparent);
+  background-color: var(--hover-bg);
+  border-color: var(--hover-border);
 }
 
 /* Shared hover highlight for toolbar controls (theme colors via CSS vars) */
