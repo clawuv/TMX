@@ -1121,16 +1121,18 @@ export default function App() {
 
         {/* Center Main Stage. The left gap only exists to separate the stage card
             from an open drawer card; with everything collapsed the rail already
-            provides the visual break, so drop the margin to avoid a dead strip. */}
+            provides the visual break, so drop the margin to avoid a dead strip.
+            The breathing room lives on the right edge (mr) instead of squeezing
+            the drawer against the terminal. */}
         <div
-          className={`flex-1 flex flex-col overflow-hidden min-w-0 rounded-lg border ${
-            leftDrawerOpen ? 'ml-1.5' : ''
+          className={`flex-1 flex flex-col overflow-hidden min-w-0 rounded-lg border mr-1 ${
+            leftDrawerOpen ? 'ml-1' : ''
           }`}
           style={{ backgroundColor: currentTheme.bgCanvas, borderColor: currentTheme.borderSubtle }}
         >
 
           {/* Dynamic Content View */}
-      <div className="flex-1 flex overflow-hidden relative gap-2 p-2 min-h-0">
+      <div className="flex-1 flex overflow-hidden relative gap-2 px-1 py-2 min-h-0">
             {/* View 1: Terminal Mode. Kept mounted while the SFTP/monitor views are
                 shown — only hidden — so xterm scrollback and running jobs survive the
                 switch. `contents` keeps this wrapper out of the flex layout while visible. */}

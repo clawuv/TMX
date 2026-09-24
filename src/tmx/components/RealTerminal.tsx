@@ -262,7 +262,7 @@ export function RealTerminal({
   return (
     <div
       className="relative h-full w-full box-border"
-      style={{ padding: '5px 5px 5px 10px', backgroundColor: toXtermColor(theme.bgCanvas, '#191C24') }}
+      style={{ padding: '5px', backgroundColor: toXtermColor(theme.bgCanvas, '#191C24') }}
       onContextMenu={(e) => {
         // 右键粘贴开启时：直接把剪贴板内容写入 pty（PuTTY 风格），不弹菜单
         if (pasteOnRightClick) {
