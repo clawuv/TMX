@@ -576,13 +576,13 @@ export const TestDrawer: React.FC<TestDrawerProps> = ({
 
   return (
     <div
-      className={className || 'flex flex-col h-full w-full select-none transition-colors duration-150 relative border-r'}
+      className={className || 'flex flex-col h-full w-full select-none transition-colors duration-150 relative rounded-md border'}
       style={{ backgroundColor: theme.bgCanvas, borderColor: theme.borderSubtle }}
     >
       {/* Header */}
       <div
         className="flex items-center justify-between h-10 px-3 border-b shrink-0"
-        style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderSubtle }}
+        style={{ backgroundColor: theme.bgCanvas, borderColor: theme.borderSubtle }}
       >
         <div className="flex items-center gap-2">
           <span className="font-semibold text-xs text-slate-200">{t('test.title')}</span>

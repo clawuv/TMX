@@ -160,7 +160,7 @@ async function createWindow() {
     // Show only once the first frame is painted — no white flash / web pop-in.
     show: false,
     // Solid background prevents flashes while resizing.
-    backgroundColor: '#12141A',
+    backgroundColor: '#15181F',
     minWidth: 940,
     minHeight: 620,
     // On Windows, draw the caption buttons in the same surface as the header.

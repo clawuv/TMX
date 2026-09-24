@@ -587,7 +587,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
       className={
         className
           ? className
-          : `flex flex-col border-r h-full select-none transition-colors duration-150 relative ${
+          : `flex flex-col rounded-md border h-full select-none transition-colors duration-150 relative ${
               mode === 'docked' ? 'w-[320px] shrink-0 z-20' : 'w-full flex-1'
             }`
       }
@@ -636,7 +636,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
       <div
         className="flex items-center justify-between h-10 px-3 border-b shrink-0"
         style={{
-          backgroundColor: theme.bgSurface,
+          backgroundColor: theme.bgCanvas,
           borderColor: theme.borderSubtle,
         }}
       >

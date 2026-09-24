@@ -40,8 +40,8 @@ const TEST_DOCK_WIDTH_STORAGE_KEY = 'tmx_test_dock_width_pct_v2';
 // Unified drawer visual layout for modern minimalist alignment.
 // Width is owned by the ResizableDock wrapper (min 280px, user-draggable,
 // scales with the window); drawers just fill it.
-const DOCKED_LEFT_DRAWER_CLASS = "flex-1 min-w-0 h-full flex flex-col border-r select-none transition-colors duration-150 z-20";
-const DOCKED_RIGHT_DRAWER_CLASS = "w-[320px] shrink-0 h-full flex flex-col border-l select-none transition-colors duration-150 z-20";
+const DOCKED_LEFT_DRAWER_CLASS = "flex-1 min-w-0 h-full flex flex-col rounded-md border select-none transition-colors duration-150 z-20";
+const DOCKED_RIGHT_DRAWER_CLASS = "w-[320px] shrink-0 h-full flex flex-col rounded-md border select-none transition-colors duration-150 z-20";
 
 const IN_ELECTRON = typeof window !== 'undefined' && typeof window.ipcRenderer !== 'undefined';
 const LOCAL_TERMINAL_LABEL = 'user@localhost';
@@ -114,15 +114,17 @@ export default function App() {
 
   // Match both the page backing surface and native window to the active theme.
   useEffect(() => {
-    document.documentElement.style.backgroundColor = currentTheme.bgBase;
-    document.body.style.backgroundColor = currentTheme.bgBase;
+    // Window backdrop follows the toolbar surface so the header, workspace
+    // background and status bar read as one continuous chrome color.
+    document.documentElement.style.backgroundColor = currentTheme.bgSurface;
+    document.body.style.backgroundColor = currentTheme.bgSurface;
     document.documentElement.style.colorScheme = currentTheme.light ? 'light' : 'dark';
     if (!IN_ELECTRON) return;
     window.ipcRenderer
       .invoke('set-titlebar-overlay', {
         color: currentTheme.bgSurface,
         symbolColor: currentTheme.textSecondary,
-        backgroundColor: currentTheme.bgBase,
+        backgroundColor: currentTheme.bgSurface,
         light: Boolean(currentTheme.light),
       })
       .catch(() => {});
@@ -964,7 +966,7 @@ export default function App() {
     <div 
       className={`soft-chrome h-screen w-screen overflow-hidden flex flex-col antialiased transition-colors duration-200 ${currentTheme.light ? 'theme-light' : ''}`}
       style={{
-        backgroundColor: currentTheme.bgBase,
+        backgroundColor: currentTheme.bgSurface,
         color: currentTheme.textPrimary,
         ['--focus-ring' as string]: currentTheme.accentPrimary,
       }}
@@ -1108,10 +1110,13 @@ export default function App() {
         )}
 
         {/* Center Main Stage */}
-        <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+        <div
+          className="flex-1 flex flex-col overflow-hidden min-w-0 rounded-md border ml-1.5"
+          style={{ backgroundColor: currentTheme.bgCanvas, borderColor: currentTheme.borderSubtle }}
+        >
 
           {/* Dynamic Content View */}
-          <div className="flex-1 flex overflow-hidden relative">
+      <div className="flex-1 flex overflow-hidden relative gap-2 p-2 min-h-0">
             {/* View 1: Terminal Mode. Kept mounted while the SFTP/monitor views are
                 shown — only hidden — so xterm scrollback and running jobs survive the
                 switch. `contents` keeps this wrapper out of the flex layout while visible. */}
