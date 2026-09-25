@@ -86,10 +86,16 @@ export const TitleBar: React.FC<TitleBarProps> = ({
   return (
     <header
       id="titlebar-integrated-header"
-      className={`app-region-drag h-10 flex items-center px-3 border-b select-none transition-colors duration-200 z-30 shrink-0 gap-2.5 ${IS_MAC ? 'pl-[80px]' : ''}`}
+      className={`app-region-drag h-10 flex items-center px-3 select-none transition-colors duration-200 z-30 shrink-0 gap-2.5 ${IS_MAC ? 'pl-[80px]' : ''}`}
       style={{
         backgroundColor: theme.bgSurface,
         borderColor: theme.borderSubtle,
+      }}
+      // The toolbar has no context menu of its own, and stopPropagation keeps the
+      // global selection fallback from popping the native OS menu here.
+      onContextMenu={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
       }}
     >
       {/* Left: App Brand (drag handle) */}
@@ -142,7 +148,6 @@ export const TitleBar: React.FC<TitleBarProps> = ({
                   ? {
                       backgroundColor: theme.bgActive,
                       borderColor: theme.borderHover,
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
                     }
                   : ({
                       '--hover-bg': theme.bgActive,

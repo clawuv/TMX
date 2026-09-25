@@ -3,9 +3,9 @@ import { useT } from '../i18n/context'
 import { isElectron, showContextMenu, type MenuItemSpec } from './desktop'
 
 // Global fallback menu for plain DOM content: editable fields get the native
-// cut/copy/paste roles, a text selection gets Copy. Components with richer
-// semantics (tabs, host rows, SFTP entries, the terminal) stop propagation and
-// open their own menu instead.
+// cut/copy/paste roles, and a right-click landing inside the current text selection
+// gets Copy. Components with richer semantics (tabs, host rows, SFTP entries, the
+// terminal) stop propagation and open their own menu instead.
 export function useNativeContextMenu(): void {
   const t = useT()
 
@@ -16,7 +16,6 @@ export function useNativeContextMenu(): void {
       const target = e.target as HTMLElement | null
       if (!target) return
       const editable = target.closest('input, textarea, [contenteditable="true"]')
-      const selection = window.getSelection()?.toString() ?? ''
 
       let items: MenuItemSpec[] = []
       if (editable) {
@@ -27,7 +26,10 @@ export function useNativeContextMenu(): void {
           { type: 'separator' },
           { role: 'selectAll', label: t('common.selectAll') },
         ]
-      } else if (selection) {
+      } else if (isPointInsideSelection(e.clientX, e.clientY)) {
+        // Only when the click is actually on the selected text. Keying off
+        // "something is selected" alone made a stray Copy menu pop up over blank
+        // chrome (e.g. an empty area of a left drawer) after selecting in a terminal.
         items = [{ role: 'copy', label: t('common.copy') }]
       }
 
@@ -39,4 +41,13 @@ export function useNativeContextMenu(): void {
     document.addEventListener('contextmenu', handler)
     return () => document.removeEventListener('contextmenu', handler)
   }, [t])
+}
+
+/** True when the point falls inside the bounding box of the current selection. */
+function isPointInsideSelection(x: number, y: number): boolean {
+  const selection = window.getSelection()
+  if (!selection || selection.isCollapsed || selection.rangeCount === 0) return false
+  const rect = selection.getRangeAt(0).getBoundingClientRect()
+  if (rect.width === 0 && rect.height === 0) return false
+  return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom
 }

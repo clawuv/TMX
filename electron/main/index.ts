@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain, dialog, nativeTheme } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, nativeTheme } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -18,7 +18,6 @@ import { registerNativeDialogIpc } from './native-dialogs'
 import { registerContextMenuIpc } from './context-menu'
 import { restoreWindowBounds, trackWindowState } from './window-state'
 import { registerWindowControls, trackWindowControls } from './window-controls'
-import { mt } from './i18n'
 import { registerApiTestIpc } from './api-test'
 
 const require = createRequire(import.meta.url)
@@ -74,6 +73,30 @@ function readPref(key: string, fallback: boolean): boolean {
   } catch {
     return fallback
   }
+}
+
+/**
+ * Ask the renderer to run its themed quit confirmation. Resolves false on timeout
+ * (or an already-gone webContents) so a hung renderer can never trap the window open
+ * in a half-closed state — the user can simply press close again.
+ */
+function askRendererToConfirmQuit(target: BrowserWindow, count: number): Promise<boolean> {
+  return new Promise<boolean>((resolve) => {
+    if (target.webContents.isDestroyed()) {
+      resolve(false)
+      return
+    }
+    const channel = 'app:confirm-quit-response'
+    const finish = (ok: boolean) => {
+      clearTimeout(timer)
+      ipcMain.removeListener(channel, onResponse)
+      resolve(ok)
+    }
+    const onResponse = (_event: Electron.IpcMainEvent, ok: unknown) => finish(Boolean(ok))
+    const timer = setTimeout(() => finish(false), 120_000)
+    ipcMain.on(channel, onResponse)
+    target.webContents.send('app:confirm-quit', { count })
+  })
 }
 
 // Windows/Linux accelerators (no menu bar). Keys are Ctrl/Cmd + key.
@@ -137,7 +160,7 @@ async function createWindow() {
     // Show only once the first frame is painted — no white flash / web pop-in.
     show: false,
     // Solid background prevents flashes while resizing.
-    backgroundColor: '#12141A',
+    backgroundColor: '#15181F',
     minWidth: 940,
     minHeight: 620,
     // On Windows, draw the caption buttons in the same surface as the header.
@@ -180,23 +203,12 @@ async function createWindow() {
     const count = activeSshSessionCount()
     if (count > 0 && readPref('warnOnCloseSession', true)) {
       event.preventDefault()
-      void dialog
-        .showMessageBox(win!, {
-          type: 'warning',
-          title: mt('dialogQuitTitle'),
-          message: mt('dialogQuitMessage'),
-          detail: mt('dialogQuitDetail', { count }),
-          buttons: [mt('dialogQuitConfirm'), mt('dialogCancel')],
-          defaultId: 1,
-          cancelId: 1,
-          noLink: true,
-        })
-        .then(({ response }) => {
-          if (response === 0) {
-            forceClose = true
-            win?.close()
-          }
-        })
+      void askRendererToConfirmQuit(win!, count).then((ok) => {
+        if (ok) {
+          forceClose = true
+          win?.close()
+        }
+      })
     }
   })
 

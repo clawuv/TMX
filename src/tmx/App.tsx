@@ -13,6 +13,7 @@ import { TerminalCanvas } from './components/TerminalCanvas';
 import { RealTerminal } from './components/RealTerminal';
 import { SFTPDrawer } from './components/SFTPDrawer';
 import { SystemMonitor } from './components/SystemMonitor';
+import { ConfirmDialog } from './components/ConfirmDialog';
 import { CommandPalette } from './components/CommandPalette';
 import { PaletteDesignModal } from './components/PaletteDesignModal';
 import { HostDrawer } from './components/HostDrawer';
@@ -23,7 +24,7 @@ import { SettingsModal } from './components/SettingsModal';
 import { StatusBar } from './components/StatusBar';
 import { I18nProvider, useI18n } from './i18n/context';
 import { ResizableDock } from './components/ResizableDock';
-import { onMenuAction, setWindowTitle, type MenuAction } from './utils/desktop';
+import { onMenuAction, setWindowTitle, nativeConfirm, type MenuAction } from './utils/desktop';
 import { initUpdateBridge } from './utils/updateState';
 import { useNativeContextMenu } from './utils/useNativeContextMenu';
 
@@ -39,8 +40,10 @@ const TEST_DOCK_WIDTH_STORAGE_KEY = 'tmx_test_dock_width_pct_v2';
 // Unified drawer visual layout for modern minimalist alignment.
 // Width is owned by the ResizableDock wrapper (min 280px, user-draggable,
 // scales with the window); drawers just fill it.
-const DOCKED_LEFT_DRAWER_CLASS = "flex-1 min-w-0 h-full flex flex-col border-r select-none transition-colors duration-150 z-20";
-const DOCKED_RIGHT_DRAWER_CLASS = "w-[320px] shrink-0 h-full flex flex-col border-l select-none transition-colors duration-150 z-20";
+// overflow-hidden is required: the full-bleed drawer headers would otherwise
+// paint square corners over the rounded card edge (visible in light themes).
+const DOCKED_LEFT_DRAWER_CLASS = "flex-1 min-w-0 h-full flex flex-col rounded-lg border overflow-hidden select-none transition-colors duration-150 z-20";
+const DOCKED_RIGHT_DRAWER_CLASS = "w-[320px] shrink-0 h-full flex flex-col rounded-lg border overflow-hidden select-none transition-colors duration-150 z-20";
 
 const IN_ELECTRON = typeof window !== 'undefined' && typeof window.ipcRenderer !== 'undefined';
 const LOCAL_TERMINAL_LABEL = 'user@localhost';
@@ -113,15 +116,17 @@ export default function App() {
 
   // Match both the page backing surface and native window to the active theme.
   useEffect(() => {
-    document.documentElement.style.backgroundColor = currentTheme.bgBase;
-    document.body.style.backgroundColor = currentTheme.bgBase;
+    // Window backdrop follows the toolbar surface so the header, workspace
+    // background and status bar read as one continuous chrome color.
+    document.documentElement.style.backgroundColor = currentTheme.bgSurface;
+    document.body.style.backgroundColor = currentTheme.bgSurface;
     document.documentElement.style.colorScheme = currentTheme.light ? 'light' : 'dark';
     if (!IN_ELECTRON) return;
     window.ipcRenderer
       .invoke('set-titlebar-overlay', {
         color: currentTheme.bgSurface,
         symbolColor: currentTheme.textSecondary,
-        backgroundColor: currentTheme.bgBase,
+        backgroundColor: currentTheme.bgSurface,
         light: Boolean(currentTheme.light),
       })
       .catch(() => {});
@@ -412,6 +417,22 @@ export default function App() {
     return unsubscribe;
   }, []);
 
+  // Main asks before dropping live SSH sessions on close; the prompt is drawn by the
+  // themed in-app dialog rather than the OS message box.
+  useEffect(() => {
+    if (!IN_ELECTRON) return;
+    return window.ipcRenderer.on('app:confirm-quit', (...args) => {
+      const count = (args[0] as { count?: number } | undefined)?.count ?? 0;
+      void nativeConfirm({
+        title: t('app.quitConfirmTitle'),
+        message: t('app.quitConfirmMessage'),
+        detail: t('app.quitConfirmDetail', { count }),
+        confirmLabel: t('app.quitConfirmAction'),
+        danger: true,
+      }).then((ok) => window.ipcRenderer.send('app:confirm-quit-response', ok));
+    });
+  }, [t]);
+
   const respondMcpConfirm = (allowed: boolean) => {
     if (!mcpConfirm) return;
     void window.ipcRenderer.invoke('mcp:confirm-response', { reqId: mcpConfirm.reqId, allowed });
@@ -669,9 +690,21 @@ export default function App() {
     void createLocalSession(newTabId);
   };
 
-  const handleCloseOtherTabs = (id: string) => {
+  // Closing every other tab at once is destructive: it kills their sessions and
+  // scrollback, so it asks first (honouring the "warn on close" preference).
+  const handleCloseOtherTabs = async (id: string) => {
     const keep = tabs.find((t) => t.id === id);
     if (!keep) return;
+    const liveOthers = tabs.filter(
+      (tab) => tab.id !== id && sessions[tab.id] && !sessions[tab.id].exited
+    ).length;
+    if (liveOthers > 0 && preferences.warnOnCloseSession) {
+      const ok = await nativeConfirm({
+        message: t('app.closeOthersConfirm', { count: liveOthers }),
+        danger: true,
+      });
+      if (!ok) return;
+    }
     for (const tab of tabs) {
       if (tab.id !== id) {
         const session = sessions[tab.id];
@@ -930,12 +963,20 @@ export default function App() {
     />
   )
 
+  // Mirrors the conditions under which a left ResizableDock actually renders.
+  const leftDrawerOpen =
+    activeSidebarNav === 'ai' ||
+    activeSidebarNav === 'hosts' ||
+    activeSidebarNav === 'snippets' ||
+    activeSidebarNav === 'test' ||
+    ((activeSidebarNav === 'sftp' || dockedSftpOpen) && activeTab.contentType !== 'sftp');
+
   return (
     <I18nProvider languagePref={preferences.language}>
     <div 
       className={`soft-chrome h-screen w-screen overflow-hidden flex flex-col antialiased transition-colors duration-200 ${currentTheme.light ? 'theme-light' : ''}`}
       style={{
-        backgroundColor: currentTheme.bgBase,
+        backgroundColor: currentTheme.bgSurface,
         color: currentTheme.textPrimary,
         ['--focus-ring' as string]: currentTheme.accentPrimary,
       }}
@@ -1078,11 +1119,20 @@ export default function App() {
           </ResizableDock>
         )}
 
-        {/* Center Main Stage */}
-        <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+        {/* Center Main Stage. The left gap only exists to separate the stage card
+            from an open drawer card; with everything collapsed the rail already
+            provides the visual break, so drop the margin to avoid a dead strip.
+            The breathing room lives on the right edge (mr) instead of squeezing
+            the drawer against the terminal. */}
+        <div
+          className={`flex-1 flex flex-col overflow-hidden min-w-0 rounded-lg border mr-1 ${
+            leftDrawerOpen ? 'ml-1' : ''
+          }`}
+          style={{ backgroundColor: currentTheme.bgCanvas, borderColor: currentTheme.borderSubtle }}
+        >
 
           {/* Dynamic Content View */}
-          <div className="flex-1 flex overflow-hidden relative">
+      <div className="flex-1 flex overflow-hidden relative gap-2 px-1 py-2 min-h-0">
             {/* View 1: Terminal Mode. Kept mounted while the SFTP/monitor views are
                 shown — only hidden — so xterm scrollback and running jobs survive the
                 switch. `contents` keeps this wrapper out of the flex layout while visible. */}
@@ -1137,7 +1187,7 @@ export default function App() {
                             >
                               <button
                                 onClick={() => void handleReconnectPane(paneId)}
-                                className="px-4 py-1.5 rounded-lg border text-xs font-semibold shadow-lg transition-opacity hover:opacity-90"
+                                className="px-4 py-1.5 rounded-lg border text-xs font-semibold transition-opacity hover:opacity-90"
                                 style={{
                                   backgroundColor: currentTheme.accentPrimary,
                                   borderColor: currentTheme.accentPrimary,
@@ -1216,7 +1266,7 @@ export default function App() {
 
       {/* Session log saved toast */}
       {logToast && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-xl border shadow-2xl text-xs animate-in fade-in"
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-xl border text-xs animate-in fade-in"
           style={{ backgroundColor: currentTheme.bgSurface, borderColor: currentTheme.borderHover, color: currentTheme.textPrimary }}>
           {logToast}
         </div>
@@ -1249,6 +1299,9 @@ export default function App() {
         onOpenSettings={() => openSettings()}
       />
 
+      {/* Themed replacement for the OS confirm/notice message box */}
+      <ConfirmDialog theme={currentTheme} />
+
       {/* Dedicated Color Scheme & Design Spec Studio Modal */}
       <PaletteDesignModal
         isOpen={isPaletteModalOpen}
@@ -1261,7 +1314,7 @@ export default function App() {
       {mcpConfirm && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
           <div
-            className="w-full max-w-md rounded-2xl border shadow-2xl overflow-hidden"
+            className="w-full max-w-md rounded-2xl border overflow-hidden"
             style={{ backgroundColor: currentTheme.bgSurface, borderColor: currentTheme.borderHover }}
           >
             <div
@@ -1296,7 +1349,7 @@ export default function App() {
               </button>
               <button
                 onClick={() => respondMcpConfirm(true)}
-                className="px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-950 shadow-md hover:opacity-90 transition-opacity"
+                className="px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-950 hover:opacity-90 transition-opacity"
                 style={{ backgroundColor: currentTheme.accentPrimary }}
               >
                 {t('app.mcpAllow')}

@@ -28,7 +28,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({
   return (
     <footer
       id="desktop-status-bar"
-      className="h-7 flex items-center justify-between px-3 border-t text-[11px] font-mono select-none transition-colors duration-200 z-10 shrink-0"
+      className="h-7 flex items-center justify-between px-3 text-[11px] font-mono select-none transition-colors duration-200 z-10 shrink-0"
       style={{
         backgroundColor: theme.bgSurface,
         borderColor: theme.borderSubtle,

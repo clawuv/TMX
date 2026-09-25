@@ -208,7 +208,7 @@ export const TerminalCanvas: React.FC<TerminalCanvasProps> = ({
       {/* Floating In-Terminal Search Bar (⌘F / Ctrl+F) */}
       {isSearchOpen && (
         <div 
-          className="terminal-search-bar absolute top-4 right-6 z-30 flex items-center gap-2 px-3 py-1.5 rounded-xl border shadow-xl backdrop-blur-md animate-in fade-in slide-in-from-top-2"
+          className="terminal-search-bar absolute top-4 right-6 z-30 flex items-center gap-2 px-3 py-1.5 rounded-xl border backdrop-blur-md animate-in fade-in slide-in-from-top-2"
           style={{
             backgroundColor: theme.bgSurface,
             borderColor: theme.borderHover,
@@ -250,7 +250,7 @@ export const TerminalCanvas: React.FC<TerminalCanvasProps> = ({
       {/* Custom Context Menu on Right Click */}
       {contextMenu?.visible && (
         <div 
-          className="fixed z-50 py-1.5 rounded-xl border shadow-2xl backdrop-blur-md animate-in fade-in zoom-in-95 text-xs select-none w-48"
+          className="fixed z-50 py-1.5 rounded-xl border backdrop-blur-md animate-in fade-in zoom-in-95 text-xs select-none w-48"
           style={{
             left: contextMenu.x,
             top: contextMenu.y,

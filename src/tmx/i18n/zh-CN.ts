@@ -5,6 +5,8 @@ const zhCN = {
   common: {
     cancel: '取消',
     confirm: '确认',
+    confirmTitle: '请确认',
+    notice: '提示',
     save: '保存',
     close: '关闭',
     delete: '删除',
@@ -28,6 +30,11 @@ const zhCN = {
     mcpDeny: '拒绝',
     logSaved: '会话日志已保存: {path}',
     splitPane: '分屏终端',
+    closeOthersConfirm: '将关闭 {count} 个含活动会话的标签页并终止其远程进程，确定继续？',
+    quitConfirmTitle: '退出 TMX',
+    quitConfirmMessage: '仍有活动的 SSH 会话',
+    quitConfirmDetail: '当前存在 {count} 个活动的 SSH 会话。退出将断开所有连接。',
+    quitConfirmAction: '仍要退出',
   },
   titleBar: {
     more: '更多操作',

@@ -163,7 +163,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     >
       <div 
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-2xl rounded-2xl border shadow-2xl overflow-hidden text-slate-200 animate-in zoom-in-95 duration-150"
+        className="w-full max-w-2xl rounded-2xl border overflow-hidden text-slate-200 animate-in zoom-in-95 duration-150"
         style={{
           backgroundColor: theme.bgSurface,
           borderColor: theme.borderHover,

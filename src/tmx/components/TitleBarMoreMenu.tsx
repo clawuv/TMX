@@ -73,7 +73,7 @@ export function TitleBarMoreMenu({ theme, actions, recording }: {
         <div ref={menu} id={id} role="menu" aria-label={t('titleBar.more')}
           className="titlebar-more-menu absolute right-0 top-full mt-2 p-1 rounded-lg border z-50 w-max min-w-[150px] max-w-[calc(100vw-24px)]"
           style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderHover, color: theme.textPrimary,
-            '--menu-hover': theme.bgActive, boxShadow: '0 6px 20px var(--chrome-shadow, rgba(0,0,0,0.24))' } as CSSProperties}
+            '--menu-hover': theme.bgActive } as CSSProperties}
           onKeyDown={event => {
             if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return
             event.preventDefault()

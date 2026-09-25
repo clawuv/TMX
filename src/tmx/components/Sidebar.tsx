@@ -69,10 +69,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside
       id="global-sidebar-navigation"
-      className="app-region-drag w-14 shrink-0 flex flex-col justify-between items-center py-3 border-r select-none z-10 transition-colors duration-200"
-      style={{
-        backgroundColor: theme.bgSurface,
-        borderColor: theme.borderSubtle,
+      // Transparent rail: merges with the window backdrop — no card chrome.
+      className="app-region-drag w-11 shrink-0 flex flex-col justify-between items-center py-2 select-none z-10 transition-colors duration-200"
+      // No context menu on the nav rail; stopPropagation also keeps the global
+      // selection fallback from popping the native OS menu over it.
+      onContextMenu={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
       }}
     >
       {/* Top Core Navigation */}
@@ -88,16 +91,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div key={item.id} className="relative group w-full flex items-center justify-center">
               <button
                 onClick={() => onSelectNav(item.id)}
-                className={`app-region-no-drag relative w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-150 ${isActive ? '' : 'sidebar-nav-item'}`}
+                className={`app-region-no-drag relative w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-150 border ${isActive ? '' : 'sidebar-nav-item'}`}
                 style={{
                   color: isActive ? theme.accentPrimary : theme.textSecondary,
                   ...(isActive
-                    ? { backgroundColor: theme.bgActive }
-                    : ({ '--hover-bg': theme.bgActive } as React.CSSProperties)),
+                    ? { backgroundColor: theme.bgActive, borderColor: theme.borderHover }
+                    : ({ '--hover-bg': theme.bgActive, '--hover-border': theme.borderHover } as React.CSSProperties)),
                 }}
                 aria-label={item.label}
               >
-                <Icon className="w-5 h-5 transition-transform duration-150 group-hover:scale-110" />
+                <Icon className="w-5 h-5" />
 
                 {/* Optional Breathing Light Badge for AI / Notifications */}
                 {item.badge && !isActive && (
@@ -111,9 +114,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {/* Tooltip on hover */}
               {showTooltip && (
               <div 
-                className="absolute left-14 ml-2 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 shadow-xl border backdrop-mica"
+                className="absolute left-11 ml-2 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 border backdrop-mica"
                 style={{
-                  backgroundColor: theme.bgSurface,
+                  backgroundColor: theme.bgCanvas,
                   color: theme.textPrimary,
                   borderColor: theme.borderHover,
                 }}
@@ -127,30 +130,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Bottom Auxiliary Navigation: Update badge, Palette, Settings */}
-      <div className="flex flex-col items-center gap-1.5 w-full pt-3">
-        <div className="w-10 h-px mb-1" style={{ backgroundColor: theme.borderSubtle }} />
+      <div className="flex flex-col items-center gap-1.5 w-full pt-2">
+        <div className="w-9 h-px mb-1" style={{ backgroundColor: theme.borderSubtle }} />
 
         {/* Update available badge — rendered only when a newer version exists */}
         {(update.phase === 'available' || update.phase === 'downloaded') && (
           <div className="relative group w-full flex items-center justify-center">
             <button
               onClick={() => onOpenUpdates?.()}
-              className="app-region-no-drag relative w-10 h-10 rounded-xl flex items-center justify-center sidebar-nav-item transition-all duration-150"
+              className="app-region-no-drag relative w-9 h-9 rounded-lg flex items-center justify-center sidebar-nav-item transition-all duration-150 border"
               style={{
                 color: theme.accentPrimary,
-                ...({ '--hover-bg': theme.bgActive } as React.CSSProperties),
+                ...({ '--hover-bg': theme.bgActive, '--hover-border': theme.borderHover } as React.CSSProperties),
               }}
               aria-label={t('sidebar.updateAvailable')}
             >
-              <Download className="w-5 h-5 transition-transform duration-150 group-hover:scale-110" />
+              <Download className="w-5 h-5" />
               <span
                 className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-slate-900 animate-pulse"
               />
             </button>
             <div
-              className="absolute left-14 ml-2 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 shadow-xl border backdrop-mica"
+              className="absolute left-11 ml-2 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 border backdrop-mica"
               style={{
-                backgroundColor: theme.bgSurface,
+                backgroundColor: theme.bgCanvas,
                 color: theme.textPrimary,
                 borderColor: theme.borderHover,
               }}
@@ -169,22 +172,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div key={item.id} className="relative group w-full flex items-center justify-center">
               <button
                 onClick={() => onSelectNav(item.id)}
-                className={`app-region-no-drag w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-150 ${isActive ? '' : 'sidebar-nav-item'}`}
+                className={`app-region-no-drag w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-150 border ${isActive ? '' : 'sidebar-nav-item'}`}
                 style={{
                   color: isActive ? theme.accentPrimary : theme.textSecondary,
                   ...(isActive
-                    ? { backgroundColor: theme.bgActive }
-                    : ({ '--hover-bg': theme.bgActive } as React.CSSProperties)),
+                    ? { backgroundColor: theme.bgActive, borderColor: theme.borderHover }
+                    : ({ '--hover-bg': theme.bgActive, '--hover-border': theme.borderHover } as React.CSSProperties)),
                 }}
                 aria-label={item.label}
               >
-                <Icon className="w-5 h-5 transition-transform duration-150 group-hover:scale-110" />
+                <Icon className="w-5 h-5" />
               </button>
 
               {showTooltip && <div
-                className="absolute left-14 ml-2 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 shadow-xl border backdrop-mica"
+                className="absolute left-11 ml-2 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 border backdrop-mica"
                 style={{
-                  backgroundColor: theme.bgSurface,
+                  backgroundColor: theme.bgCanvas,
                   color: theme.textPrimary,
                   borderColor: theme.borderHover,
                 }}

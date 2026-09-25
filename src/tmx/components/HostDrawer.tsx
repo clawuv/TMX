@@ -150,7 +150,7 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
 
   return (
     <div
-      className={className || "w-[320px] shrink-0 h-full flex flex-col border-r select-none transition-colors duration-150 z-20"}
+      className={className || "w-[320px] shrink-0 h-full flex flex-col rounded-md border select-none transition-colors duration-150 z-20"}
       style={{
         backgroundColor: theme.bgCanvas,
         borderColor: theme.borderSubtle,
@@ -160,7 +160,7 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
       <div 
         className="flex items-center justify-between h-10 px-3 border-b shrink-0"
         style={{
-          backgroundColor: theme.bgSurface,
+          backgroundColor: theme.bgCanvas,
           borderColor: theme.borderSubtle,
         }}
       >
@@ -379,7 +379,7 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
                   else if (id === 'delete') onDeleteHost?.(h.id);
                 });
               }}
-              className="p-2.5 rounded-xl border cursor-pointer transition-all duration-150 group hover:shadow-lg hover:shadow-black/30"
+              className="p-2.5 rounded-xl border cursor-pointer transition-all duration-150 group"
               style={{
                 backgroundColor: isActive ? theme.bgSurface : 'transparent',
                 borderColor: isActive ? theme.borderHover : theme.borderSubtle,
