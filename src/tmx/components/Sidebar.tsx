@@ -91,7 +91,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div key={item.id} className="relative group w-full flex items-center justify-center">
               <button
                 onClick={() => onSelectNav(item.id)}
-                className={`app-region-no-drag relative w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-150 border ${isActive ? '' : 'sidebar-nav-item'}`}
+                className={`app-region-no-drag relative w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-150 border ${isActive ? '' : 'sidebar-nav-item'}`}
                 style={{
                   color: isActive ? theme.accentPrimary : theme.textSecondary,
                   ...(isActive
@@ -138,7 +138,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="relative group w-full flex items-center justify-center">
             <button
               onClick={() => onOpenUpdates?.()}
-              className="app-region-no-drag relative w-9 h-9 rounded-lg flex items-center justify-center sidebar-nav-item transition-all duration-150 border"
+              className="app-region-no-drag relative w-8 h-8 rounded-lg flex items-center justify-center sidebar-nav-item transition-all duration-150 border"
               style={{
                 color: theme.accentPrimary,
                 ...({ '--hover-bg': theme.bgActive, '--hover-border': theme.borderHover } as React.CSSProperties),
@@ -172,7 +172,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div key={item.id} className="relative group w-full flex items-center justify-center">
               <button
                 onClick={() => onSelectNav(item.id)}
-                className={`app-region-no-drag w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-150 border ${isActive ? '' : 'sidebar-nav-item'}`}
+                className={`app-region-no-drag w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-150 border ${isActive ? '' : 'sidebar-nav-item'}`}
                 style={{
                   color: isActive ? theme.accentPrimary : theme.textSecondary,
                   ...(isActive
