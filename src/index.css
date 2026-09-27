@@ -218,6 +218,13 @@
   background-color: rgba(255, 255, 255, 0.05);
 }
 
+/* Light theme: the white row hover above is invisible on light surfaces —
+   mirror it at the same strength with the dark tint (matches how Tailwind's
+   white/x utilities flip through --color-white under .theme-light). */
+.theme-light .sftp-file-row:hover {
+  background-color: color-mix(in oklab, var(--color-white) 5%, transparent);
+}
+
 /* Light theme (Cloud Mist): flip the hardcoded slate text scale & input overlays.
    Tailwind v4 utilities resolve slate-* through these custom properties, so one
    class on the app root adapts every hardcoded dark-theme text color. */
