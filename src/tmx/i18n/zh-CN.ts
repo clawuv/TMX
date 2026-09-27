@@ -59,7 +59,7 @@ const zhCN = {
     newTab: '新建连接标签页 (⌘T)',
     closeTab: '关闭标签页 (⌘W)',
     closeOthers: '关闭其他标签页',
-    copyTitle: '复制标签标题',
+    duplicateTab: '复制标签',
     split: '左右分屏对比 (Split ⌘D)',
     splitRestore: '恢复单屏终端 (⌘D)',
     clear: '清屏 (Clear)',

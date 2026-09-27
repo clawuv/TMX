@@ -105,7 +105,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {/* Optional Breathing Light Badge for AI / Notifications */}
                 {item.badge && !isActive && (
                   <span
-                    className="absolute top-2 right-2 w-2 h-2 rounded-full ring-2 ring-slate-900 animate-pulse"
+                    className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full ring-2 ring-slate-900 animate-pulse"
                     style={{ backgroundColor: theme.accentPrimary }}
                   />
                 )}
@@ -131,7 +131,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Bottom Auxiliary Navigation: Update badge, Palette, Settings */}
       <div className="flex flex-col items-center gap-1.5 w-full pt-2">
-        <div className="w-9 h-px mb-1" style={{ backgroundColor: theme.borderSubtle }} />
+        <div className="w-8 h-px mb-1" style={{ backgroundColor: theme.borderSubtle }} />
 
         {/* Update available badge — rendered only when a newer version exists */}
         {(update.phase === 'available' || update.phase === 'downloaded') && (
@@ -147,7 +147,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             >
               <Download className="w-5 h-5" />
               <span
-                className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-slate-900 animate-pulse"
+                className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-slate-900 animate-pulse"
               />
             </button>
             <div

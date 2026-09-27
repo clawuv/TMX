@@ -690,6 +690,21 @@ export default function App() {
     void createLocalSession(newTabId);
   };
 
+  // Duplicate a tab = open a fresh tab for the same target: a local shell for
+  // local tabs, a new SSH dial-out for remote ones. handleConnectHost rolls
+  // the placeholder tab back on failure, so errors only need logging here.
+  const handleDuplicateTab = (id: string) => {
+    const tab = tabs.find((t) => t.id === id);
+    if (!tab) return;
+    if (tab.hostId === 'local') {
+      handleNewTab();
+      return;
+    }
+    const host = hosts.find((h) => h.id === tab.hostId);
+    if (!host) return;
+    void handleConnectHost(host).catch((err) => console.error('[tabs] duplicate failed:', err));
+  };
+
   // Closing every other tab at once is destructive: it kills their sessions and
   // scrollback, so it asks first (honouring the "warn on close" preference).
   const handleCloseOtherTabs = async (id: string) => {
@@ -1000,6 +1015,7 @@ export default function App() {
         onSelectTab={handleSelectTab}
         onCloseTab={handleCloseTab}
         onCloseOtherTabs={handleCloseOtherTabs}
+        onDuplicateTab={handleDuplicateTab}
         onNewTab={() => handleNewTab()}
         onOpenPaletteModal={() => setIsPaletteModalOpen(true)}
         onOpenSettings={() => openSettings()}

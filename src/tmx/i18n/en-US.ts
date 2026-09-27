@@ -59,7 +59,7 @@ const enUS: Dictionary = {
     newTab: 'New connection tab (⌘T)',
     closeTab: 'Close tab (⌘W)',
     closeOthers: 'Close other tabs',
-    copyTitle: 'Copy tab title',
+    duplicateTab: 'Duplicate tab',
     split: 'Split terminal (Split ⌘D)',
     splitRestore: 'Restore single pane (⌘D)',
     clear: 'Clear terminal',

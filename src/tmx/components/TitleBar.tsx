@@ -31,6 +31,7 @@ interface TitleBarProps {
   onSelectTab: (id: string) => void;
   onCloseTab: (id: string) => void;
   onCloseOtherTabs?: (id: string) => void;
+  onDuplicateTab?: (id: string) => void;
   onNewTab: () => void;
   onOpenPaletteModal?: () => void;
   onOpenSettings?: () => void;
@@ -55,6 +56,7 @@ export const TitleBar: React.FC<TitleBarProps> = ({
   onSelectTab,
   onCloseTab,
   onCloseOtherTabs,
+  onDuplicateTab,
   onNewTab,
   onOpenPaletteModal,
   onOpenSettings,
@@ -126,7 +128,7 @@ export const TitleBar: React.FC<TitleBarProps> = ({
                 e.stopPropagation();
                 onSelectTab(tab.id);
                 const items: MenuItemSpec[] = [
-                  { id: 'copy-title', label: t('titleBar.copyTitle') },
+                  { id: 'duplicate', label: t('titleBar.duplicateTab') },
                 ];
                 if (tabs.length > 1) {
                   items.push(
@@ -136,7 +138,7 @@ export const TitleBar: React.FC<TitleBarProps> = ({
                   );
                 }
                 showContextMenu(items, (id) => {
-                  if (id === 'copy-title') navigator.clipboard.writeText(tab.title);
+                  if (id === 'duplicate') onDuplicateTab?.(tab.id);
                   else if (id === 'close') onCloseTab(tab.id);
                   else if (id === 'close-others') onCloseOtherTabs?.(tab.id);
                 });
