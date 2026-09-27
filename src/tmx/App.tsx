@@ -89,6 +89,8 @@ interface TerminalSessionInfo {
   kind: 'local' | 'ssh';
   /** Set when the underlying process/stream closed; the pane shows a reconnect overlay. */
   exited?: boolean;
+  /** Origin host of a remote pane; split panes are not tabs, so this is their only host record. */
+  hostId?: string;
 }
 
 export default function App() {
@@ -373,6 +375,10 @@ export default function App() {
   const [sessions, setSessions] = useState<Record<string, TerminalSessionInfo>>({});
   const sessionsRef = useRef(sessions);
   sessionsRef.current = sessions;
+  // Keyboard/menu handlers capture these by closure across renders, so the
+  // split toggle reads them through a ref to always act on the current state.
+  const splitStateRef = useRef({ isSplitPane, activeTabId });
+  splitStateRef.current = { isSplitPane, activeTabId };
   const bootstrappedRef = useRef(false);
 
   // Debounced preferences push to SQLite (single JSON row)
@@ -617,7 +623,7 @@ export default function App() {
         openSettings();
       } else if ((e.metaKey || e.ctrlKey) && e.key === 'd') {
         e.preventDefault();
-        setIsSplitPane((prev) => !prev);
+        handleToggleSplit();
       } else if ((e.metaKey || e.ctrlKey) && e.key === 'b') {
         e.preventDefault();
         const { activeSidebarNav: nav, dockedSftpOpen: sftpOpen, drawerPinned: pinned } = drawerStateRef.current;
@@ -748,7 +754,7 @@ export default function App() {
           if (!pinned) { setActiveSidebarNav(null); setDockedSftpOpen(false); }
         } else { setActiveSidebarNav('sftp'); setDockedSftpOpen(true); }
         break;
-      case 'split': setIsSplitPane((p) => !p); break;
+      case 'split': handleToggleSplit(); break;
       case 'zen': handleToggleZenMode(); break;
     }
   };
@@ -939,13 +945,18 @@ export default function App() {
       }
       return;
     }
-    const tab = tabs.find((t) => t.id === paneId);
-    const host = tab ? hosts.find((h) => h.id === tab.hostId) : undefined;
+    // The split pane is not a tab: it remembers its origin host on the session
+    // entry itself and falls back to whichever tab is active now.
+    const hostId =
+      paneId === 'secondary-split'
+        ? dead.hostId ?? tabs.find((t) => t.id === splitStateRef.current.activeTabId)?.hostId
+        : tabs.find((t) => t.id === paneId)?.hostId;
+    const host = hosts.find((h) => h.id === hostId);
     if (!host) return;
     setTabs((prev) => prev.map((t) => (t.id === paneId ? { ...t, status: 'connecting' } : t)));
     try {
       const sessionId = await createSshSession(host);
-      setSessions((prev) => ({ ...prev, [paneId]: { sessionId, kind: 'ssh' } }));
+      setSessions((prev) => ({ ...prev, [paneId]: { sessionId, kind: 'ssh', hostId: host.id } }));
       setTabs((prev) => prev.map((t) => (t.id === paneId ? { ...t, status: 'connected' } : t)));
     } catch (err) {
       console.error('[terminal] reconnect failed:', err);
@@ -957,14 +968,40 @@ export default function App() {
     runInActiveTerminal(command);
   };
 
+  // The right pane duplicates the active tab's target: an SSH tab connects a
+  // second session to the same host, a local tab opens another local shell.
+  const spawnSecondarySplit = async (sourceTabId: string) => {
+    const tab = tabs.find((t) => t.id === sourceTabId);
+    const host = tab && tab.hostId !== 'local' ? hosts.find((h) => h.id === tab.hostId) : undefined;
+    if (host) {
+      try {
+        const sessionId = await createSshSession(host);
+        setSessions((prev) => ({
+          ...prev,
+          'secondary-split': { sessionId, kind: 'ssh', hostId: host.id },
+        }));
+        return;
+      } catch (err) {
+        // A failed duplicate leaves nothing to render on the right — fold the
+        // split back instead of showing an empty half (same rollback idea as
+        // handleConnectHost's placeholder tab).
+        console.error('[terminal] split session failed:', err);
+        setIsSplitPane(false);
+        return;
+      }
+    }
+    await createLocalSession('secondary-split');
+  };
+
   const handleToggleSplit = () => {
-    const next = !isSplitPane;
+    const { isSplitPane: split, activeTabId: tabId } = splitStateRef.current;
+    const next = !split;
     setIsSplitPane(next);
-    // Turning the split on always yields a live shell: a dead pane kept around
-    // from a previous exit is replaced rather than shown again.
+    // Turning the split on always duplicates the active tab into a live pane:
+    // a dead pane kept around from a previous exit is replaced, not shown again.
     const existing = sessionsRef.current['secondary-split'];
     if (next && IN_ELECTRON && (!existing || existing.exited)) {
-      void createLocalSession('secondary-split');
+      void spawnSecondarySplit(tabId);
     }
   };
 
@@ -1322,7 +1359,7 @@ export default function App() {
         onSelectHost={handleConnectHost}
         onRunSnippet={handleRunSnippet}
         onSelectTheme={(th) => setCurrentTheme(th)}
-        onToggleSplit={() => setIsSplitPane(!isSplitPane)}
+        onToggleSplit={handleToggleSplit}
         onOpenSFTP={() => handleChangeContentType('sftp')}
         onClearTerminal={handleClearTerminal}
         onOpenPaletteModal={() => setIsPaletteModalOpen(true)}
