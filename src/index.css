@@ -305,6 +305,21 @@ body:not(:has(.theme-light)) .hover\:border-white\/20:hover {
   background: rgba(255, 255, 255, 0.28);
 }
 
+/* Light theme: the white thumbs above are invisible on light surfaces — mirror
+   them at the strength the xterm overrides below already use (black 20/35). */
+.theme-light ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+}
+.theme-light ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+.theme-light .xterm-viewport::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+}
+.theme-light .xterm-viewport::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+
 /* Hide scrollbars while keeping content scrollable (drawer filter tab rows) */
 .no-scrollbar {
   scrollbar-width: none;
