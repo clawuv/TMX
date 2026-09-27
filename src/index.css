@@ -265,23 +265,35 @@ body:not(:has(.theme-light)) .hover\:border-white\/20:hover {
 }
 
 /* Terminal scrollbar (xterm 6 renders its own VS Code-style scrollbar) —
-   restyled to match the app-wide sleek scrollbar */
+   restyled to match the app-wide sleek scrollbar. xterm's layout JS writes
+   inline size/background on the slider, so overrides need !important, and the
+   slider is a child of .scrollbar (not a direct child of the element). */
 .xterm .xterm-scrollable-element > .scrollbar.vertical {
   width: 6px !important;
 }
 
-.xterm .xterm-scrollable-element > .slider {
-  left: 0 !important;
-  width: 6px !important;
+.xterm .xterm-scrollable-element > .scrollbar.horizontal {
+  height: 6px !important;
+}
+
+.xterm .xterm-scrollable-element .slider {
   background: rgba(255, 255, 255, 0.14) !important;
   border-radius: 9999px !important;
+}
+
+.xterm .xterm-scrollable-element > .scrollbar.vertical > .slider {
+  width: 6px !important;
+}
+
+.xterm .xterm-scrollable-element > .scrollbar.horizontal > .slider {
+  height: 6px !important;
 }
 
 .xterm .xterm-scrollable-element > .scrollbar.vertical:hover > .slider {
   background: rgba(255, 255, 255, 0.28) !important;
 }
 
-.theme-light .xterm .xterm-scrollable-element > .slider {
+.theme-light .xterm .xterm-scrollable-element .slider {
   background: rgba(0, 0, 0, 0.2) !important;
 }
 
