@@ -90,7 +90,8 @@ export const TitleBar: React.FC<TitleBarProps> = ({
       id="titlebar-integrated-header"
       className={`app-region-drag h-10 flex items-center px-3 select-none transition-colors duration-200 z-30 shrink-0 gap-2.5 ${IS_MAC ? 'pl-[80px]' : ''}`}
       style={{
-        backgroundColor: theme.bgSurface,
+        // Transparent so the root desk gradient flows through the header.
+        backgroundColor: 'transparent',
         borderColor: theme.borderSubtle,
       }}
       // The toolbar has no context menu of its own, and stopPropagation keeps the

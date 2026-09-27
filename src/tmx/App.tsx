@@ -5,6 +5,7 @@ import { DEFAULT_PREFERENCES } from './types';
 import { THEMES } from './data/themes';
 import { INITIAL_HOSTS, INITIAL_TABS, INITIAL_SNIPPETS } from './data/mockData';
 import { simulateCommandOutput } from './utils/commandSimulator';
+import { shadeHex } from './utils/color';
 
 import { TitleBar } from './components/TitleBar';
 import type { SidebarNavId } from './components/Sidebar';
@@ -1035,12 +1036,30 @@ export default function App() {
     activeSidebarNav === 'test' ||
     ((activeSidebarNav === 'sftp' || dockedSftpOpen) && activeTab.contentType !== 'sftp');
 
+  // Desktop-style backdrop, all stops derived from the active theme tokens:
+  // ambient accent glows in the corners over a diagonal base ramp (lighter at
+  // the top, deeper at the bottom). Dark themes get a second glow bottom-left;
+  // the light theme stays airier with one. TitleBar/StatusBar/panels stay
+  // transparent or solid so this reads as one continuous desk surface.
+  const backdrop = currentTheme.light
+    ? [
+        `radial-gradient(1200px 720px at 82% -12%, ${currentTheme.accentSoft}, transparent 62%)`,
+        `radial-gradient(760px 460px at -8% 108%, ${currentTheme.accentSoft}, transparent 46%)`,
+        `linear-gradient(168deg, ${currentTheme.bgCanvas} 0%, ${currentTheme.bgSurface} 45%, ${currentTheme.bgBase} 100%)`,
+      ].join(', ')
+    : [
+        `radial-gradient(1200px 720px at 82% -12%, ${currentTheme.accentSoft}, transparent 62%)`,
+        `radial-gradient(1000px 640px at -12% 112%, ${currentTheme.accentSoft}, transparent 58%)`,
+        `linear-gradient(168deg, ${shadeHex(currentTheme.bgSurface, 0.05)} 0%, ${currentTheme.bgSurface} 40%, ${shadeHex(currentTheme.bgBase, -0.28)} 100%)`,
+      ].join(', ');
+
   return (
     <I18nProvider languagePref={preferences.language}>
-    <div 
+    <div
       className={`soft-chrome h-screen w-screen overflow-hidden flex flex-col antialiased transition-colors duration-200 ${currentTheme.light ? 'theme-light' : ''}`}
       style={{
         backgroundColor: currentTheme.bgSurface,
+        backgroundImage: backdrop,
         color: currentTheme.textPrimary,
         ['--focus-ring' as string]: currentTheme.accentPrimary,
       }}

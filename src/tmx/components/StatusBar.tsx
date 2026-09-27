@@ -30,7 +30,8 @@ export const StatusBar: React.FC<StatusBarProps> = ({
       id="desktop-status-bar"
       className="h-7 flex items-center justify-between px-3 text-[11px] font-mono select-none transition-colors duration-200 z-10 shrink-0"
       style={{
-        backgroundColor: theme.bgSurface,
+        // Transparent so the root desk gradient flows through the footer.
+        backgroundColor: 'transparent',
         borderColor: theme.borderSubtle,
         color: theme.textSecondary,
       }}
