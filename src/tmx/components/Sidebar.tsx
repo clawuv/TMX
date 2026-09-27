@@ -70,7 +70,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <aside
       id="global-sidebar-navigation"
       // Transparent rail: merges with the window backdrop — no card chrome.
-      className="app-region-drag w-11 shrink-0 flex flex-col justify-between items-center py-2 select-none z-10 transition-colors duration-200"
+      className="app-region-drag w-10 shrink-0 flex flex-col justify-between items-center py-2 select-none z-10 transition-colors duration-200"
       // No context menu on the nav rail; stopPropagation also keeps the global
       // selection fallback from popping the native OS menu over it.
       onContextMenu={(e) => {
@@ -114,7 +114,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {/* Tooltip on hover */}
               {showTooltip && (
               <div 
-                className="absolute left-11 ml-2 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 border backdrop-mica"
+                className="absolute left-10 ml-2 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 border backdrop-mica"
                 style={{
                   backgroundColor: theme.bgCanvas,
                   color: theme.textPrimary,
@@ -151,7 +151,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               />
             </button>
             <div
-              className="absolute left-11 ml-2 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 border backdrop-mica"
+              className="absolute left-10 ml-2 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 border backdrop-mica"
               style={{
                 backgroundColor: theme.bgCanvas,
                 color: theme.textPrimary,
@@ -185,7 +185,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </button>
 
               {showTooltip && <div
-                className="absolute left-11 ml-2 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 border backdrop-mica"
+                className="absolute left-10 ml-2 px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-50 border backdrop-mica"
                 style={{
                   backgroundColor: theme.bgCanvas,
                   color: theme.textPrimary,
