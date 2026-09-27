@@ -178,18 +178,17 @@ export const AICopilotDrawer: React.FC<AICopilotDrawerProps> = ({
       </div>
 
       {/* Input form */}
-      <form 
+      <form
         onSubmit={handleSubmit}
         className="p-3 border-t shrink-0 space-y-2"
         style={{
-          backgroundColor: theme.bgBase,
           borderColor: theme.borderSubtle,
         }}
       >
-        <div 
+        <div
           className="flex items-center gap-2 p-2 rounded-xl border focus-within:border-sky-400 transition-colors"
           style={{
-            backgroundColor: theme.bgInput,
+            backgroundColor: theme.bgSurface,
             borderColor: theme.borderSubtle,
           }}
         >
