@@ -734,7 +734,7 @@ export default function App() {
         } else { setActiveSidebarNav('sftp'); setDockedSftpOpen(true); }
         break;
       case 'split': setIsSplitPane((p) => !p); break;
-      case 'zen': setIsZenMode((p) => !p); break;
+      case 'zen': handleToggleZenMode(); break;
     }
   };
   useEffect(() => onMenuAction((action) => menuActionRef.current(action)), []);
@@ -851,6 +851,18 @@ export default function App() {
       return;
     }
     setActiveSidebarNav(nav);
+  };
+
+  // Entering Zen (immersive) mode also collapses every open side drawer — pin
+  // included — so the workspace starts truly empty; exiting reopens nothing.
+  const handleToggleZenMode = () => {
+    const entering = !isZenMode;
+    setIsZenMode(entering);
+    if (entering) {
+      setActiveSidebarNav(null);
+      setDockedSftpOpen(false);
+      setDrawerPinned(false);
+    }
   };
 
   const handleConnectHost = async (host: ConnectionHost) => {
@@ -995,7 +1007,7 @@ export default function App() {
         isSplit={isSplitPane}
         onToggleSplit={handleToggleSplit}
         isZenMode={isZenMode}
-        onToggleZenMode={() => setIsZenMode(!isZenMode)}
+        onToggleZenMode={handleToggleZenMode}
         onClearTerminal={handleClearTerminal}
         onTakeSnapshot={() => {
           runInActiveTerminal('fastfetch');
