@@ -141,7 +141,7 @@ export const TitleBar: React.FC<TitleBarProps> = ({
                   else if (id === 'close-others') onCloseOtherTabs?.(tab.id);
                 });
               }}
-              className={`app-region-no-drag group relative flex items-center gap-1 h-6 px-1.5 rounded-lg text-xs cursor-pointer transition-all duration-150 border shrink-0 ${isActive ? 'tab-item-active' : 'tab-item'}`}
+              className={`app-region-no-drag group relative flex items-center gap-1 h-[26px] px-1.5 rounded-lg text-xs cursor-pointer transition-all duration-150 border shrink-0 ${isActive ? 'tab-item-active' : 'tab-item'}`}
               style={{
                 color: isActive ? theme.textPrimary : theme.textSecondary,
                 ...(isActive
@@ -204,7 +204,7 @@ export const TitleBar: React.FC<TitleBarProps> = ({
         <button
           onClick={onNewTab}
           title={t('titleBar.newTab')}
-          className="app-region-no-drag hover-elevate p-1 rounded-lg text-slate-400 hover:text-slate-200 transition-colors border border-transparent shrink-0"
+          className="app-region-no-drag hover-elevate p-[5px] rounded-lg text-slate-400 hover:text-slate-200 transition-colors border border-transparent shrink-0"
           style={{ '--hover-bg': theme.bgActive } as React.CSSProperties}
         >
           <Plus className="w-3.5 h-3.5" />

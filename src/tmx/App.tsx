@@ -1133,12 +1133,14 @@ export default function App() {
 
         {/* Center Main Stage. The left gap only exists to separate the stage card
             from an open drawer card; with everything collapsed the rail already
-            provides the visual break, so drop the margin to avoid a dead strip.
+            provides the visual break, so drop the margin to avoid a dead strip —
+            except in Zen mode, where the rail is hidden and the stage would
+            otherwise sit flush against the window edge (right keeps its mr gap).
             The breathing room lives on the right edge (mr) instead of squeezing
             the drawer against the terminal. */}
         <div
           className={`flex-1 flex flex-col overflow-hidden min-w-0 rounded-lg border mr-1 ${
-            leftDrawerOpen ? 'ml-1' : ''
+            leftDrawerOpen || isZenMode ? 'ml-1' : ''
           }`}
           style={{ backgroundColor: currentTheme.bgCanvas, borderColor: currentTheme.borderSubtle }}
         >
