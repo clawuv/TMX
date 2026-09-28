@@ -208,7 +208,7 @@ export interface QuickSnippet {
   description: string;
 }
 
-export type SettingTabId = 'language' | 'appearance' | 'shortcuts' | 'sidebar' | 'advanced' | 'security' | 'bookmarks' | 'storage' | 'mcp' | 'about';
+export type SettingTabId = 'language' | 'appearance' | 'shortcuts' | 'sidebar' | 'advanced' | 'security' | 'bookmarks' | 'storage' | 'mcp' | 'ai' | 'about';
 
 export interface UserPreferences {
   // 语言

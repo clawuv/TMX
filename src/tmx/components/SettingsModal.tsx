@@ -357,6 +357,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         tabs: [
           { id: 'storage', label: t('settings.tabStorage'), icon: Database, desc: t('settings.storageSub') },
           { id: 'mcp', label: t('settings.tabMcp'), icon: Plug, desc: t('settings.mcpSub') },
+          { id: 'ai', label: t('settings.tabAi'), icon: Sparkles, desc: t('settings.aiTitle') },
           { id: 'advanced', label: t('settings.tabAdvanced'), icon: Cpu, desc: t('settings.advancedTitle') },
           { id: 'security', label: t('settings.tabSecurity'), icon: ShieldCheck, desc: t('settings.securityTitle') },
           { id: 'about', label: t('settings.tabAbout'), icon: Info, desc: t('settings.aboutSub') },
@@ -958,8 +959,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </div>
             )}
 
-            {/* 5. 高级功能 (Advanced) */}
-            {activeTab === 'advanced' && (
+            {/* AI 助手 (AI) */}
+            {activeTab === 'ai' && (
               <div className="space-y-3 animate-in fade-in duration-150">
                 {/* AI 接口配置（OpenAI 兼容） */}
                 <div className="space-y-1.5 pb-1">
@@ -992,8 +993,38 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   </div>
                 </div>
 
-                <div className="pt-1 border-t border-white/5" />
+                {/* AI 智能副驾引擎 */}
+                <div className="space-y-1.5 pt-2 border-t border-white/5">
+                  <label className="font-medium text-slate-300 flex items-center gap-2 mb-1.5">
+                    <Sparkles className="w-4 h-4 text-purple-400" />
+                    <span>{t('settings.aiModel')}</span>
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { id: 'gemini-2.0', name: 'Google Gemini 2.0 Flash', sub: t('settings.aiFast') },
+                      { id: 'gemini-1.5', name: 'Google Gemini 1.5 Pro', sub: t('settings.aiComplex') },
+                      { id: 'local-ollama', name: 'Local Ollama Engine', sub: t('settings.aiLocal') },
+                    ].map((model) => (
+                      <div
+                        key={model.id}
+                        onClick={() => onUpdatePreference('aiModel', model.name)}
+                        className={`px-2 py-1 rounded-xl border cursor-pointer transition-all ${
+                          preferences.aiModel.includes(model.id.split('-')[0]) || preferences.aiModel === model.name
+                            ? 'border-purple-400 bg-purple-500/10 text-white'
+                            : 'border-white/10 bg-black/20 text-slate-400 hover:text-slate-200'
+                        }`}
+                      >
+                        <div className="font-semibold text-[10px] text-slate-100">{model.name}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
 
+            {/* 5. 高级功能 (Advanced) */}
+            {activeTab === 'advanced' && (
+              <div className="space-y-3 animate-in fade-in duration-150">
                 {/* SSH 保活心跳 */}
                 <div className="space-y-1.5">
                   <label className="font-medium text-slate-300 flex items-center justify-between mb-1.5">
@@ -1093,33 +1124,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         className="rounded text-sky-500 focus:ring-0 w-4 h-4"
                       />
                     </label>
-                  </div>
-                </div>
-
-                {/* AI 智能副驾引擎 */}
-                <div className="space-y-1.5 pt-2 border-t border-white/5">
-                  <label className="font-medium text-slate-300 flex items-center gap-2 mb-1.5">
-                    <Sparkles className="w-4 h-4 text-purple-400" />
-                    <span>{t('settings.aiModel')}</span>
-                  </label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {[
-                      { id: 'gemini-2.0', name: 'Google Gemini 2.0 Flash', sub: t('settings.aiFast') },
-                      { id: 'gemini-1.5', name: 'Google Gemini 1.5 Pro', sub: t('settings.aiComplex') },
-                      { id: 'local-ollama', name: 'Local Ollama Engine', sub: t('settings.aiLocal') },
-                    ].map((model) => (
-                      <div
-                        key={model.id}
-                        onClick={() => onUpdatePreference('aiModel', model.name)}
-                        className={`px-2 py-1 rounded-xl border cursor-pointer transition-all ${
-                          preferences.aiModel.includes(model.id.split('-')[0]) || preferences.aiModel === model.name
-                            ? 'border-purple-400 bg-purple-500/10 text-white'
-                            : 'border-white/10 bg-black/20 text-slate-400 hover:text-slate-200'
-                        }`}
-                      >
-                        <div className="font-semibold text-[10px] text-slate-100">{model.name}</div>
-                      </div>
-                    ))}
                   </div>
                 </div>
               </div>
