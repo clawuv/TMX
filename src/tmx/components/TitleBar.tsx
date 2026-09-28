@@ -112,7 +112,7 @@ export const TitleBar: React.FC<TitleBarProps> = ({
         {/* Subtle Vertical Divider */}
         <div
           className="h-4 w-px shrink-0"
-          style={{ backgroundColor: theme.borderSubtle }}
+          style={{ backgroundColor: theme.borderHover }}
         />
       </div>
 
@@ -240,7 +240,7 @@ export const TitleBar: React.FC<TitleBarProps> = ({
         </div>
 
         {/* Divider between tab navigation and the more-actions menu */}
-        <div className="h-4 w-px mx-0.5" style={{ backgroundColor: theme.borderSubtle }} />
+        <div className="h-4 w-px mx-0.5" style={{ backgroundColor: theme.borderHover }} />
 
         <TitleBarMoreMenu
           theme={theme}

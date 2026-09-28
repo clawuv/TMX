@@ -131,7 +131,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Bottom Auxiliary Navigation: Update badge, Palette, Settings */}
       <div className="flex flex-col items-center gap-1.5 w-full pt-2">
-        <div className="w-8 h-px mb-1" style={{ backgroundColor: theme.borderSubtle }} />
+        <div className="w-7 h-px mb-1" style={{ backgroundColor: theme.borderHover }} />
 
         {/* Update available badge — rendered only when a newer version exists */}
         {(update.phase === 'available' || update.phase === 'downloaded') && (
