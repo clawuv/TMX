@@ -379,24 +379,25 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
                   else if (id === 'delete') onDeleteHost?.(h.id);
                 });
               }}
-              className="p-2.5 rounded-xl border cursor-pointer transition-all duration-150 group"
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border cursor-pointer transition-all duration-150 group"
               style={{
                 backgroundColor: isActive ? theme.bgSurface : 'transparent',
                 borderColor: isActive ? theme.borderHover : theme.borderSubtle,
               }}
             >
-              <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-2 truncate">
-                  <div
-                    className={`w-2 h-2 rounded-full ${connectingHostId === h.id ? 'animate-pulse' : ''}`}
-                    style={{ backgroundColor: connectingHostId === h.id ? theme.accentWarning : theme.accentSuccess }}
-                  />
-                  <span className="font-semibold text-xs text-slate-100 font-mono truncate">
-                    {h.name}
-                  </span>
-                </div>
+              <div
+                className={`w-2 h-2 rounded-full shrink-0 ${connectingHostId === h.id ? 'animate-pulse' : ''}`}
+                style={{ backgroundColor: connectingHostId === h.id ? theme.accentWarning : theme.accentSuccess }}
+              />
+              <span className="font-semibold text-xs text-slate-100 font-mono truncate shrink-0 max-w-[45%]">
+                {h.name}
+              </span>
 
-                <div className="flex items-center gap-1.5">
+              <span className="flex-1 min-w-0 text-right text-[11px] text-slate-400 font-mono truncate">
+                {isVirtual ? 'user@localhost' : `${h.user}@${h.host}:${h.port}`}
+              </span>
+
+              <div className="flex items-center gap-1.5 shrink-0">
                   {!isVirtual && onDeleteHost && (
                     <button
                       type="button"
@@ -452,11 +453,6 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
                     )
                   )}
                 </div>
-              </div>
-
-              <div className="text-[11px] text-slate-400 font-mono truncate">
-                {isVirtual ? 'user@localhost' : `${h.user}@${h.host}:${h.port}`}
-              </div>
             </div>
             );
           };
@@ -483,13 +479,15 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
               {favorites.map(renderHost)}
               {sectionGroups.map((g) => {
                 const members = savedHosts.filter((h) => !h.favorite && h.group === g);
+                // Fragment keeps rows flat children of the space-y list — a
+                // wrapper div would swallow the inter-row gaps.
                 return (
-                  <div key={g}>
+                  <React.Fragment key={g}>
                     <div className="px-2 pt-2 pb-0.5 text-[10px] font-medium tracking-wider text-slate-500">
                       {g} ({members.length})
                     </div>
                     {members.map(renderHost)}
-                  </div>
+                  </React.Fragment>
                 );
               })}
             </>
