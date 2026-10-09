@@ -213,15 +213,18 @@
   -webkit-backdrop-filter: blur(24px) saturate(180%);
 }
 
-/* SFTP file rows: light hover lift (whole row, not just the actions chip) */
-.sftp-file-row:hover {
+/* SFTP file rows: light hover lift (whole row, not just the actions chip).
+   Host list rows in HostDrawer share the same row pattern. */
+.sftp-file-row:hover,
+.host-row:hover {
   background-color: rgba(255, 255, 255, 0.05);
 }
 
 /* Light theme: the white row hover above is invisible on light surfaces —
    mirror it at the same strength with the dark tint (matches how Tailwind's
    white/x utilities flip through --color-white under .theme-light). */
-.theme-light .sftp-file-row:hover {
+.theme-light .sftp-file-row:hover,
+.theme-light .host-row:hover {
   background-color: color-mix(in oklab, var(--color-white) 5%, transparent);
 }
 

@@ -328,7 +328,7 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
       )}
 
       {/* Host list — All view: favorites pinned, then categorized sections */}
-      <div className="flex-1 overflow-y-auto p-2 space-y-1.5">
+      <div className="flex-1 overflow-y-auto p-1.5 space-y-0.5">
         {filteredHosts.length === 0 && (
           <div className="py-10 text-center space-y-1.5">
             <div className="text-xs text-slate-400">
@@ -379,10 +379,10 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
                   else if (id === 'delete') onDeleteHost?.(h.id);
                 });
               }}
-              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border cursor-pointer transition-all duration-150 group"
+              className="host-row group relative flex h-[30px] items-center gap-2 px-2 py-1.5 rounded-lg cursor-pointer transition-colors border"
               style={{
-                backgroundColor: isActive ? theme.bgSurface : 'transparent',
-                borderColor: isActive ? theme.borderHover : theme.borderSubtle,
+                backgroundColor: isActive ? theme.bgActive : 'transparent',
+                borderColor: isActive ? theme.borderHover : 'transparent',
               }}
             >
               <div
@@ -397,7 +397,13 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
                 {isVirtual ? 'user@localhost' : `${h.user}@${h.host}:${h.port}`}
               </span>
 
-              <div className="flex items-center gap-1.5 shrink-0">
+              {/* Hover actions chip — absolutely positioned like SFTP rows so
+                  appearing buttons never reflow the row content. */}
+              {((!isVirtual && onDeleteHost) || onMonitorHost) && (
+                <div
+                  className="absolute right-8 top-1/2 -translate-y-1/2 hidden group-hover:flex items-center gap-0.5 rounded-md px-1 py-0.5"
+                  style={{ backgroundColor: theme.bgBase }}
+                >
                   {!isVirtual && onDeleteHost && (
                     <button
                       type="button"
@@ -405,7 +411,7 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
                         e.stopPropagation();
                         onDeleteHost(h.id);
                       }}
-                      className="hidden group-hover:flex p-1 rounded hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-colors"
+                      className="p-1 rounded hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-colors"
                       title={t('hosts.remove')}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -419,40 +425,41 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
                         e.stopPropagation();
                         onMonitorHost(h);
                       }}
-                      className="hidden group-hover:flex p-1 rounded hover:bg-white/10 text-slate-400 hover:text-sky-400 transition-colors"
+                      className="p-1 rounded hover:bg-white/10 text-slate-400 hover:text-sky-400 transition-colors"
                       title={t('hosts.monitor')}
                     >
                       <Activity className="w-3.5 h-3.5" />
                     </button>
                   )}
-
-                  {onToggleFavorite && (
-                    h.id === 'local' ? (
-                      // The local machine is pinned as a favorite; the star is
-                      // display-only and cannot be toggled off.
-                      <span
-                        className="p-1"
-                        title={t('hosts.favorite')}
-                      >
-                        <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                      </span>
-                    ) : (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onToggleFavorite(h.id);
-                      }}
-                      className="p-1 rounded hover:bg-white/10 transition-colors"
-                      title={h.favorite ? t('hosts.unfavorite') : t('hosts.favorite')}
-                    >
-                      <Star className={`w-3.5 h-3.5 transition-colors ${
-                        h.favorite ? 'text-amber-400 fill-amber-400' : 'text-slate-500 hover:text-amber-400'
-                      }`} />
-                    </button>
-                    )
-                  )}
                 </div>
+              )}
+
+              {onToggleFavorite && (
+                h.id === 'local' ? (
+                  // The local machine is pinned as a favorite; the star is
+                  // display-only and cannot be toggled off.
+                  <span
+                    className="p-1 shrink-0"
+                    title={t('hosts.favorite')}
+                  >
+                    <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                  </span>
+                ) : (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onToggleFavorite(h.id);
+                  }}
+                  className="p-1 rounded hover:bg-white/10 transition-colors shrink-0"
+                  title={h.favorite ? t('hosts.unfavorite') : t('hosts.favorite')}
+                >
+                  <Star className={`w-3.5 h-3.5 transition-colors ${
+                    h.favorite ? 'text-amber-400 fill-amber-400' : 'text-slate-500 hover:text-amber-400'
+                  }`} />
+                </button>
+                )
+              )}
             </div>
             );
           };
