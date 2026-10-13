@@ -22,7 +22,6 @@ import { AICopilotDrawer } from './components/AICopilotDrawer';
 import { SnippetsDrawer } from './components/SnippetsDrawer';
 import { TestDrawer } from './components/TestDrawer';
 import { SettingsModal } from './components/SettingsModal';
-import { StatusBar } from './components/StatusBar';
 import { I18nProvider, useI18n } from './i18n/context';
 import { ResizableDock } from './components/ResizableDock';
 import { onMenuAction, setWindowTitle, nativeConfirm, type MenuAction } from './utils/desktop';
@@ -1104,8 +1103,9 @@ export default function App() {
         onToggleDrawerPin={() => setDrawerPinned((prev) => !prev)}
       />
 
-      {/* 2. Main Workspace Layout */}
-      <div className="flex-1 flex overflow-hidden relative">
+      {/* 2. Main Workspace Layout. pb-1 mirrors the stage's mr-1 so the bottom
+          edge gets the same 4px breathing room as the right edge. */}
+      <div className="flex-1 flex overflow-hidden relative pb-1">
         {/* Global Left Narrow Sidebar (Hidden in Zen mode) */}
         {!isZenMode && (
           <Sidebar
@@ -1352,20 +1352,11 @@ export default function App() {
 
       {/* Session log saved toast */}
       {logToast && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-xl border text-xs animate-in fade-in"
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-xl border text-xs animate-in fade-in"
           style={{ backgroundColor: currentTheme.bgSurface, borderColor: currentTheme.borderHover, color: currentTheme.textPrimary }}>
           {logToast}
         </div>
       )}
-
-      {/* 3. Bottom Minimalist Status Bar */}
-      <StatusBar
-        host={activeHost}
-        theme={currentTheme}
-        local={isLocalTab}
-        onOpenAICopilot={() => setActiveSidebarNav('ai')}
-        isSplit={isSplitPane}
-      />
 
       {/* 4. Overlays & Dialogs */}
       {/* Command Palette (Raycast / Warp style Cmd+K) */}
