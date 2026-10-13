@@ -27,7 +27,6 @@ export const ResizableDock: React.FC<ResizableDockProps> = ({
   maxPct = 45,
   onChange,
   onReset,
-  theme,
   children,
 }) => {
   const t = useT()
@@ -57,7 +56,9 @@ export const ResizableDock: React.FC<ResizableDockProps> = ({
       style={{ width: `clamp(${minPx}px, ${widthPct}%, ${maxPct}%)` }}
     >
       {children}
-      {/* Divider: subtle inset line (gaps at both ends) that highlights on hover */}
+      {/* Drag handle. The visible 1px divider is the docked drawer's own right
+          border — this overlay only provides the hit area, a hover hint, and a
+          stronger column while dragging. */}
       <div
         onMouseDown={(e) => {
           e.preventDefault();
@@ -65,18 +66,11 @@ export const ResizableDock: React.FC<ResizableDockProps> = ({
         }}
         onDoubleClick={onReset}
         title={t('dock.resizeHint')}
-        className={`absolute inset-y-3 right-0 w-[5px] -mr-[2px] cursor-col-resize z-30 flex items-center justify-center ${
+        className={`absolute inset-y-0 right-0 w-[5px] -mr-[2px] cursor-col-resize z-30 ${
           isDragging ? 'bg-sky-500/15' : 'hover:bg-white/5'
         } transition-colors`}
       >
-        <div
-          className={`h-full w-px transition-colors ${isDragging ? 'w-[2px] bg-sky-400' : ''}`}
-          style={
-            isDragging
-              ? undefined
-              : { backgroundColor: theme.borderSubtle, opacity: 0.4 }
-          }
-        />
+        {isDragging && <div className="absolute inset-y-0 right-[2px] w-[2px] bg-sky-400" />}
       </div>
     </div>
   );

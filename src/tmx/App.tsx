@@ -43,7 +43,9 @@ const TEST_DOCK_WIDTH_STORAGE_KEY = 'tmx_test_dock_width_pct_v2';
 // scales with the window); drawers just fill it.
 // overflow-hidden is required: the full-bleed drawer headers would otherwise
 // paint square corners over the rounded card edge (visible in light themes).
-const DOCKED_LEFT_DRAWER_CLASS = "flex-1 min-w-0 h-full flex flex-col rounded-lg border overflow-hidden select-none transition-colors duration-150 z-20";
+// Right corners stay square: the drawer's right border doubles as the 1px
+// divider against the stage, so rounding would leave gaps at the seam.
+const DOCKED_LEFT_DRAWER_CLASS = "flex-1 min-w-0 h-full flex flex-col rounded-l-lg rounded-r-none border overflow-hidden select-none transition-colors duration-150 z-20";
 const DOCKED_RIGHT_DRAWER_CLASS = "w-[320px] shrink-0 h-full flex flex-col rounded-lg border overflow-hidden select-none transition-colors duration-150 z-20";
 
 const IN_ELECTRON = typeof window !== 'undefined' && typeof window.ipcRenderer !== 'undefined';
@@ -1203,17 +1205,15 @@ export default function App() {
           </ResizableDock>
         )}
 
-        {/* Center Main Stage. The left gap only exists to separate the stage card
-            from an open drawer card; with everything collapsed the rail already
-            provides the visual break, so drop the margin to avoid a dead strip —
-            except in Zen mode, where the rail is hidden and the stage would
-            otherwise sit flush against the window edge (right keeps its mr gap).
-            The breathing room lives on the right edge (mr) instead of squeezing
-            the drawer against the terminal. */}
+        {/* Center Main Stage. With a drawer docked, the drawer's own right border
+            is the single 1px divider: the stage sits flush with no left margin or
+            left border of its own, so the seam never doubles up. In Zen mode the
+            rail is hidden, so the stage keeps a small left margin against the
+            window edge (right keeps its mr gap). */}
         <div
           className={`flex-1 flex flex-col overflow-hidden min-w-0 rounded-lg border mr-1 ${
-            leftDrawerOpen || isZenMode ? 'ml-1' : ''
-          }`}
+            leftDrawerOpen ? 'rounded-l-none border-l-0' : ''
+          } ${isZenMode ? 'ml-1' : ''}`}
           style={{ backgroundColor: currentTheme.bgCanvas, borderColor: currentTheme.borderSubtle }}
         >
 
