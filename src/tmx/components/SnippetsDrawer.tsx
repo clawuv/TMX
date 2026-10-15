@@ -84,15 +84,14 @@ export const SnippetsDrawer: React.FC<SnippetsDrawerProps> = ({
       className={className || "w-[320px] shrink-0 h-full flex flex-col rounded-md border select-none transition-colors duration-150 z-20"}
       style={{
         backgroundColor: theme.bgCanvas,
-        borderColor: theme.borderSubtle,
+        borderColor: `var(--panel-border, ${theme.borderSubtle})`,
       }}
     >
       {/* Header */}
-      <div 
-        className="flex items-center justify-between h-10 px-3 border-b shrink-0"
+      <div
+        className="flex items-center justify-between h-10 px-3 shrink-0"
         style={{
           backgroundColor: theme.bgCanvas,
-          borderColor: theme.borderSubtle,
         }}
       >
         <div className="flex items-center gap-2">
@@ -170,7 +169,7 @@ export const SnippetsDrawer: React.FC<SnippetsDrawerProps> = ({
       )}
 
       {/* Filter and Search */}
-      <div className="p-3 border-b space-y-2 shrink-0" style={{ borderColor: theme.borderSubtle }}>
+      <div className="p-3 space-y-2 shrink-0">
         <div 
           className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs"
           style={{

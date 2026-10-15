@@ -577,12 +577,15 @@ export const TestDrawer: React.FC<TestDrawerProps> = ({
   return (
     <div
       className={className || 'flex flex-col h-full w-full select-none transition-colors duration-150 relative rounded-md border'}
-      style={{ backgroundColor: theme.bgCanvas, borderColor: theme.borderSubtle }}
+      style={{
+        backgroundColor: theme.bgCanvas,
+        borderColor: `var(--panel-border, ${theme.borderSubtle})`,
+      }}
     >
       {/* Header */}
       <div
-        className="flex items-center justify-between h-10 px-3 border-b shrink-0"
-        style={{ backgroundColor: theme.bgCanvas, borderColor: theme.borderSubtle }}
+        className="flex items-center justify-between h-10 px-3 shrink-0"
+        style={{ backgroundColor: theme.bgCanvas }}
       >
         <div className="flex items-center gap-2">
           <span className="font-semibold text-xs text-slate-200">{t('test.title')}</span>
@@ -932,7 +935,7 @@ export const TestDrawer: React.FC<TestDrawerProps> = ({
                         {isOpen ? <ChevronUp className="w-3 h-3 text-slate-500 shrink-0" /> : <ChevronDown className="w-3 h-3 text-slate-500 shrink-0" />}
                       </div>
                       {isOpen && (
-                        <div className="px-2 py-1.5 border-t border-white/5">
+                        <div className="px-2 py-1.5">
                           <div className="text-[10px] text-slate-500 mb-1">
                             {t('test.expectShort', { status: cases.find((c) => c.id === r.caseId)?.expectStatus ?? '—' })}{' '}
                             {r.networkError ?? r.status}

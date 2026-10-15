@@ -593,7 +593,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
       }
       style={{
         backgroundColor: theme.bgCanvas,
-        borderColor: theme.borderSubtle,
+        borderColor: `var(--panel-border, ${theme.borderSubtle})`,
       }}
       onDragOver={(e) => {
         e.preventDefault();
@@ -634,10 +634,9 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
 
       {/* SFTP Header */}
       <div
-        className="flex items-center justify-between h-10 px-3 border-b shrink-0"
+        className="flex items-center justify-between h-10 px-3 shrink-0"
         style={{
           backgroundColor: theme.bgCanvas,
-          borderColor: theme.borderSubtle,
         }}
       >
         <div className="flex items-center gap-2 min-w-0">
@@ -686,7 +685,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
 
       {/* Path Breadcrumb & Search */}
       {connState !== 'error' && connState !== 'idle' && (
-        <div className="p-2 space-y-1.5 border-b shrink-0" style={{ borderColor: theme.borderSubtle }}>
+        <div className="p-2 space-y-1.5 shrink-0">
           <div className="flex items-center gap-1">
             <button
               onClick={() => void loadPath(parentPath(currentPath))}
@@ -954,7 +953,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
 
       {/* Transfer Queue Panel */}
       {transfers.length > 0 && (
-        <div className="border-t shrink-0" style={{ borderColor: theme.borderSubtle }}>
+        <div className="shrink-0">
           <div
             className="flex items-center justify-between px-2.5 py-1.5 cursor-pointer hover:bg-white/5 transition-colors"
             onClick={() => setQueueOpen((v) => !v)}
