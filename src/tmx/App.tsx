@@ -44,10 +44,8 @@ const TEST_DOCK_WIDTH_STORAGE_KEY = 'tmx_test_dock_width_pct_v2';
 // paint square corners over the rounded card edge (visible in light themes).
 // Right corners stay square: the drawer's right border doubles as the 1px
 // divider against the stage, so rounding would leave gaps at the seam.
-// soft-panel adds the floating shadow from index.css; the seam-* class clips
-// that shadow at the edge shared with the stage so the divider stays clean.
-const DOCKED_LEFT_DRAWER_CLASS = "flex-1 min-w-0 h-full flex flex-col rounded-l-lg rounded-r-none border overflow-hidden select-none soft-panel soft-panel-seam-right transition-colors duration-150 z-20";
-const DOCKED_RIGHT_DRAWER_CLASS = "w-[320px] shrink-0 h-full flex flex-col rounded-lg border overflow-hidden select-none soft-panel soft-panel-seam-left transition-colors duration-150 z-20";
+const DOCKED_LEFT_DRAWER_CLASS = "flex-1 min-w-0 h-full flex flex-col rounded-l-lg rounded-r-none border overflow-hidden select-none transition-colors duration-150 z-20";
+const DOCKED_RIGHT_DRAWER_CLASS = "w-[320px] shrink-0 h-full flex flex-col rounded-lg border overflow-hidden select-none transition-colors duration-150 z-20";
 
 const IN_ELECTRON = typeof window !== 'undefined' && typeof window.ipcRenderer !== 'undefined';
 const LOCAL_TERMINAL_LABEL = 'user@localhost';
@@ -1048,14 +1046,9 @@ export default function App() {
     0.52,
   );
 
-  // Desktop floating feel: the main panels (stage, docked drawers) drop the
-  // crisp outline for a half-faded hairline and a soft two-layer shadow, so
-  // they read as windows resting on the desk. Theme-aware because black
-  // shadows vanish on light surfaces while light hairlines vanish on dark.
+  // Desktop feel: the main panels (stage, docked drawers) use a half-faded
+  // hairline instead of the crisp outline so edges blend into the desk tone.
   const panelBorder = `color-mix(in oklab, ${currentTheme.borderSubtle} 65%, transparent)`;
-  const panelShadow = currentTheme.light
-    ? '0 1px 2px rgba(15, 23, 42, 0.08), 0 8px 24px -8px rgba(15, 23, 42, 0.16)'
-    : '0 1px 2px rgba(0, 0, 0, 0.32), 0 8px 24px -8px rgba(0, 0, 0, 0.5)';
 
   return (
     <I18nProvider languagePref={preferences.language}>
@@ -1066,7 +1059,6 @@ export default function App() {
         color: currentTheme.textPrimary,
         ['--focus-ring' as string]: currentTheme.accentPrimary,
         ['--panel-border' as string]: panelBorder,
-        ['--panel-shadow' as string]: panelShadow,
       }}
     >
       {/* 1. Integrated Header (Merged TitleBar + Tab Bar) */}
@@ -1215,7 +1207,7 @@ export default function App() {
             rail is hidden, so the stage keeps a small left margin against the
             window edge (right keeps its mr gap). */}
         <div
-          className={`soft-panel flex-1 flex flex-col overflow-hidden min-w-0 rounded-lg border mr-1 ${
+          className={`flex-1 flex flex-col overflow-hidden min-w-0 rounded-lg border mr-1 ${
             leftDrawerOpen ? 'rounded-l-none border-l-0' : ''
           } ${isZenMode ? 'ml-1' : ''}`}
           style={{

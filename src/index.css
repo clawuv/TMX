@@ -110,26 +110,6 @@
   z-index: 11;
 }
 
-/* Desktop floating feel for the main panels (stage, docked drawers): a soft
-   two-layer shadow lifts them off the desk background. The hairline itself is
-   softened via --panel-border, defined on the app root in App.tsx. Unlayered
-   so it never fights the utilities layer. */
-.soft-panel {
-  box-shadow: var(--panel-shadow, none);
-}
-
-/* Docked drawers sit flush against the stage: their shared border IS the seam
-   divider, so the floating shadow must not spill onto the content area. The
-   negative insets let the shadow render on the free edges while the zero inset
-   clips it exactly at the seam edge (shadow reach ≤24px, 32px for headroom). */
-.soft-panel-seam-right {
-  clip-path: inset(-32px 0 -32px -32px);
-}
-
-.soft-panel-seam-left {
-  clip-path: inset(-32px -32px -32px 0);
-}
-
 /* The hand pointer is a web idiom; desktop apps keep the regular system arrow
    even over clickable rows and option cards. This unlayered rule outranks
    Tailwind's utilities layer, so every .cursor-pointer utility in the markup
