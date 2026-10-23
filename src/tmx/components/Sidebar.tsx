@@ -79,7 +79,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       }}
     >
       {/* Top Core Navigation */}
-      <div className="flex flex-col items-center gap-2.5 w-full">
+      <div className="flex flex-col items-center gap-3 w-full">
         {topNavItems.map((item) => {
           // Only one nav icon may read as selected: an open drawer wins,
           // monitor lights up just for the content view with no drawer open.
@@ -130,7 +130,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Bottom Auxiliary Navigation: Update badge, Palette, Settings */}
-      <div className="flex flex-col items-center gap-2.5 w-full pt-2">
+      <div className="flex flex-col items-center gap-3 w-full pt-2">
         <div className="w-7 h-px mb-1" style={{ backgroundColor: theme.borderHover }} />
 
         {/* Update available badge — rendered only when a newer version exists */}

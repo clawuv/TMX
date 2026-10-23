@@ -5,7 +5,6 @@ import { DEFAULT_PREFERENCES } from './types';
 import { THEMES } from './data/themes';
 import { INITIAL_HOSTS, INITIAL_TABS, INITIAL_SNIPPETS } from './data/mockData';
 import { simulateCommandOutput } from './utils/commandSimulator';
-import { flattenOverlay } from './utils/color';
 
 import { TitleBar } from './components/TitleBar';
 import type { SidebarNavId } from './components/Sidebar';
@@ -1037,12 +1036,9 @@ export default function App() {
     activeSidebarNav === 'test' ||
     ((activeSidebarNav === 'sftp' || dockedSftpOpen) && activeTab.contentType !== 'sftp');
 
-  // Flat desk tone — no gradient. Dark chrome (title bar + nav rail) must read
-  // as its exact surface color, so it skips the faded accent wash that the
-  // light theme still applies over its canvas tone.
-  const deskTone = currentTheme.light
-    ? flattenOverlay(currentTheme.bgCanvas, currentTheme.accentSoft, 0.52)
-    : currentTheme.bgSurface;
+  // Flat desk tone — no gradient. Chrome (title bar + nav rail) reads as the
+  // exact surface color in both modes: no accent wash is layered on top.
+  const deskTone = currentTheme.bgSurface;
 
   // Desktop feel: the main panels (stage, docked drawers) use a half-faded
   // hairline instead of the crisp outline so edges blend into the desk tone.
