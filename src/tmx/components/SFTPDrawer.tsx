@@ -1077,7 +1077,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
       {connState === 'connected' && (
         <div
           onClick={() => fileInputRef.current?.click()}
-          className="mx-3 my-2 h-[55px] px-2 flex flex-col items-center justify-center rounded-xl border border-dashed text-center cursor-pointer transition-all hover:border-sky-400/50 group shrink-0"
+          className="mx-3 my-2 h-[55px] px-2 flex flex-col items-center justify-center rounded-xl border border-dashed text-center cursor-pointer transition-all group shrink-0"
           style={{
             backgroundColor: theme.bgBase,
             borderColor: theme.borderSubtle,

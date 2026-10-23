@@ -150,11 +150,10 @@ export const TitleBar: React.FC<TitleBarProps> = ({
                 ...(isActive
                   ? {
                       backgroundColor: theme.bgActive,
-                      borderColor: theme.borderHover,
+                      borderColor: 'transparent',
                     }
                   : ({
                       '--hover-bg': theme.bgActive,
-                      '--hover-border': theme.borderHover,
                     } as React.CSSProperties)),
               }}
             >

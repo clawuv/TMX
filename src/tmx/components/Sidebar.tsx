@@ -79,7 +79,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       }}
     >
       {/* Top Core Navigation */}
-      <div className="flex flex-col items-center gap-1.5 w-full">
+      <div className="flex flex-col items-center gap-2.5 w-full">
         {topNavItems.map((item) => {
           // Only one nav icon may read as selected: an open drawer wins,
           // monitor lights up just for the content view with no drawer open.
@@ -95,12 +95,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 style={{
                   color: isActive ? theme.accentPrimary : theme.textSecondary,
                   ...(isActive
-                    ? { backgroundColor: theme.bgActive, borderColor: theme.borderHover }
-                    : ({ '--hover-bg': theme.bgActive, '--hover-border': theme.borderHover } as React.CSSProperties)),
+                    ? { backgroundColor: theme.bgActive, borderColor: 'transparent' }
+                    : ({ '--hover-bg': theme.bgActive } as React.CSSProperties)),
                 }}
                 aria-label={item.label}
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="w-4.5 h-4.5" />
 
                 {/* Optional Breathing Light Badge for AI / Notifications */}
                 {item.badge && !isActive && (
@@ -130,7 +130,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Bottom Auxiliary Navigation: Update badge, Palette, Settings */}
-      <div className="flex flex-col items-center gap-1.5 w-full pt-2">
+      <div className="flex flex-col items-center gap-2.5 w-full pt-2">
         <div className="w-7 h-px mb-1" style={{ backgroundColor: theme.borderHover }} />
 
         {/* Update available badge — rendered only when a newer version exists */}
@@ -141,11 +141,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
               className="app-region-no-drag relative w-8 h-8 rounded-lg flex items-center justify-center sidebar-nav-item transition-all duration-150 border"
               style={{
                 color: theme.accentPrimary,
-                ...({ '--hover-bg': theme.bgActive, '--hover-border': theme.borderHover } as React.CSSProperties),
+                ...({ '--hover-bg': theme.bgActive } as React.CSSProperties),
               }}
               aria-label={t('sidebar.updateAvailable')}
             >
-              <Download className="w-5 h-5" />
+              <Download className="w-4.5 h-4.5" />
               <span
                 className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-slate-900 animate-pulse"
               />
@@ -176,12 +176,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 style={{
                   color: isActive ? theme.accentPrimary : theme.textSecondary,
                   ...(isActive
-                    ? { backgroundColor: theme.bgActive, borderColor: theme.borderHover }
-                    : ({ '--hover-bg': theme.bgActive, '--hover-border': theme.borderHover } as React.CSSProperties)),
+                    ? { backgroundColor: theme.bgActive, borderColor: 'transparent' }
+                    : ({ '--hover-bg': theme.bgActive } as React.CSSProperties)),
                 }}
                 aria-label={item.label}
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="w-4.5 h-4.5" />
               </button>
 
               {showTooltip && <div

@@ -241,7 +241,7 @@ export const PaletteDesignModal: React.FC<PaletteDesignModalProps> = ({
                   <div
                     key={item.name}
                     onClick={() => handleCopy(item.hex)}
-                    className="p-1.5 rounded-lg border border-white/5 bg-black/20 hover:border-white/20 cursor-pointer text-center group"
+                    className="p-1.5 rounded-lg border border-white/5 bg-black/20 cursor-pointer text-center group"
                   >
                     <div 
                       className="w-full h-4 rounded mb-1"
@@ -269,7 +269,7 @@ export const PaletteDesignModal: React.FC<PaletteDesignModalProps> = ({
                 <span>1. 拒绝纯黑，告别视觉割裂</span>
               </div>
               <p className="text-slate-400 text-xs leading-relaxed">
-                放弃刺激极强且容易让眼部聚焦疲劳的 `#000000` 纯黑底，采用低饱和蓝冷灰（如 `#15181F`），在确保对比度的同时极大软化边缘光晕。
+                放弃刺激极强且容易让眼部聚焦疲劳的 `#000000` 纯黑底，采用低饱和中性灰（如 `#282A2A`），在确保对比度的同时极大软化边缘光晕。
               </p>
             </div>
 

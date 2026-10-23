@@ -219,7 +219,7 @@ export const SnippetsDrawer: React.FC<SnippetsDrawerProps> = ({
         {filtered.map((s) => (
           <div
             key={s.id}
-            className="p-2.5 rounded-xl border space-y-1.5 group hover:border-white/20 transition-all"
+            className="p-2.5 rounded-xl border space-y-1.5 group transition-all"
             style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderSubtle }}
           >
             <div className="flex items-center justify-between gap-2 h-5">
