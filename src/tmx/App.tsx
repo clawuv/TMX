@@ -1211,7 +1211,7 @@ export default function App() {
         >
 
           {/* Dynamic Content View */}
-      <div className="flex-1 flex overflow-hidden relative gap-2 px-1 py-2 min-h-0">
+      <div className="flex-1 flex overflow-hidden relative gap-2 pl-1 py-2 min-h-0">
             {/* View 1: Terminal Mode. Kept mounted while the SFTP/monitor views are
                 shown — only hidden — so xterm scrollback and running jobs survive the
                 switch. `contents` keeps this wrapper out of the flex layout while visible. */}

@@ -257,12 +257,14 @@ export function RealTerminal({
 
   // xterm paints a whole number of text rows, which can leave a sub-row gap at the
   // bottom; painting the container in the canvas color keeps it visually seamless.
-  // The outer padding gives the output breathing room on all sides; the inner div
+  // The outer padding gives the output breathing room (right edge stays open so
+  // the scrollbar hugs the stage border); the inner div
   // is what xterm measures, so the fit addon accounts for the inset automatically.
   return (
     <div
       className="relative h-full w-full box-border"
-      style={{ padding: '5px', backgroundColor: toXtermColor(theme.bgCanvas, '#181818') }}
+      // Right padding is zero so the xterm scrollbar hugs the stage border.
+      style={{ padding: '5px 0 5px 5px', backgroundColor: toXtermColor(theme.bgCanvas, '#181818') }}
       onContextMenu={(e) => {
         // 右键粘贴开启时：直接把剪贴板内容写入 pty（PuTTY 风格），不弹菜单
         if (pasteOnRightClick) {
