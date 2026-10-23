@@ -309,7 +309,7 @@ const enUS: Dictionary = {
     localHost: 'Local machine',
   },
   dock: {
-    resizeHint: 'Drag to resize · double-click to reset',
+    resizeHint: 'Drag to resize · double-click to collapse',
   },
   settings: {
     title: 'Preferences',

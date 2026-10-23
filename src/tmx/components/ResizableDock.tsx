@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import type { ThemeConfig } from '../types';
 import { useT } from '../i18n/context';
@@ -12,8 +12,10 @@ interface ResizableDockProps {
   /** Never let the dock eat more than this share of the window */
   maxPct?: number;
   onChange: (pct: number) => void;
-  /** Double-click the handle to restore the default width */
+  /** Double-click the handle to restore the default width (fallback when no onCollapse) */
   onReset: () => void;
+  /** Double-click the handle to collapse (close) the drawer; wins over onReset */
+  onCollapse?: () => void;
   children: React.ReactNode;
 }
 
@@ -27,11 +29,14 @@ export const ResizableDock: React.FC<ResizableDockProps> = ({
   maxPct = 45,
   onChange,
   onReset,
-  theme,
+  onCollapse,
   children,
 }) => {
   const t = useT()
   const [isDragging, setIsDragging] = useState(false);
+  // Double-click detection lives in mousedown: preventDefault() there stops
+  // Chromium from synthesizing native dblclick events on the handle.
+  const lastHandleTapRef = useRef(0);
 
   useEffect(() => {
     if (!isDragging) return;
@@ -57,26 +62,36 @@ export const ResizableDock: React.FC<ResizableDockProps> = ({
       style={{ width: `clamp(${minPx}px, ${widthPct}%, ${maxPct}%)` }}
     >
       {children}
-      {/* Divider: subtle inset line (gaps at both ends) that highlights on hover */}
+      {/* Drag handle. The visible 1px divider is the docked drawer's own right
+          border — this overlay only provides the hit area, a hover hint, and a
+          stronger column while dragging. */}
       <div
         onMouseDown={(e) => {
           e.preventDefault();
+          // detail===2 covers CDP/automation double-presses that skip the first
+          // mousedown; the timing window catches everything else.
+          const now = Date.now();
+          if (e.detail === 2 || now - lastHandleTapRef.current < 350) {
+            lastHandleTapRef.current = 0;
+            setIsDragging(false);
+            if (onCollapse) onCollapse();
+            else onReset();
+            return;
+          }
+          lastHandleTapRef.current = now;
           setIsDragging(true);
         }}
-        onDoubleClick={onReset}
+        onDoubleClick={(e) => {
+          e.preventDefault();
+          if (onCollapse) onCollapse();
+          else onReset();
+        }}
         title={t('dock.resizeHint')}
-        className={`absolute inset-y-3 right-0 w-[5px] -mr-[2px] cursor-col-resize z-30 flex items-center justify-center ${
+        className={`absolute inset-y-0 right-0 w-[5px] -mr-[2px] cursor-col-resize z-30 ${
           isDragging ? 'bg-sky-500/15' : 'hover:bg-white/5'
         } transition-colors`}
       >
-        <div
-          className={`h-full w-px transition-colors ${isDragging ? 'w-[2px] bg-sky-400' : ''}`}
-          style={
-            isDragging
-              ? undefined
-              : { backgroundColor: theme.borderSubtle, opacity: 0.4 }
-          }
-        />
+        {isDragging && <div className="absolute inset-y-0 right-[2px] w-[2px] bg-sky-400" />}
       </div>
     </div>
   );

@@ -5,7 +5,6 @@ import { DEFAULT_PREFERENCES } from './types';
 import { THEMES } from './data/themes';
 import { INITIAL_HOSTS, INITIAL_TABS, INITIAL_SNIPPETS } from './data/mockData';
 import { simulateCommandOutput } from './utils/commandSimulator';
-import { shadeHex } from './utils/color';
 
 import { TitleBar } from './components/TitleBar';
 import type { SidebarNavId } from './components/Sidebar';
@@ -22,7 +21,6 @@ import { AICopilotDrawer } from './components/AICopilotDrawer';
 import { SnippetsDrawer } from './components/SnippetsDrawer';
 import { TestDrawer } from './components/TestDrawer';
 import { SettingsModal } from './components/SettingsModal';
-import { StatusBar } from './components/StatusBar';
 import { I18nProvider, useI18n } from './i18n/context';
 import { ResizableDock } from './components/ResizableDock';
 import { onMenuAction, setWindowTitle, nativeConfirm, type MenuAction } from './utils/desktop';
@@ -43,8 +41,10 @@ const TEST_DOCK_WIDTH_STORAGE_KEY = 'tmx_test_dock_width_pct_v2';
 // scales with the window); drawers just fill it.
 // overflow-hidden is required: the full-bleed drawer headers would otherwise
 // paint square corners over the rounded card edge (visible in light themes).
-const DOCKED_LEFT_DRAWER_CLASS = "flex-1 min-w-0 h-full flex flex-col rounded-lg border overflow-hidden select-none transition-colors duration-150 z-20";
-const DOCKED_RIGHT_DRAWER_CLASS = "w-[320px] shrink-0 h-full flex flex-col rounded-lg border overflow-hidden select-none transition-colors duration-150 z-20";
+// Right corners stay square: the drawer's right border doubles as the 1px
+// divider against the stage, so rounding would leave gaps at the seam.
+const DOCKED_LEFT_DRAWER_CLASS = "flex-1 min-w-0 h-full flex flex-col rounded-l-xl rounded-r-none border overflow-hidden select-none transition-colors duration-150 z-20";
+const DOCKED_RIGHT_DRAWER_CLASS = "w-[320px] shrink-0 h-full flex flex-col rounded-xl border overflow-hidden select-none transition-colors duration-150 z-20";
 
 const IN_ELECTRON = typeof window !== 'undefined' && typeof window.ipcRenderer !== 'undefined';
 const LOCAL_TERMINAL_LABEL = 'user@localhost';
@@ -1036,32 +1036,23 @@ export default function App() {
     activeSidebarNav === 'test' ||
     ((activeSidebarNav === 'sftp' || dockedSftpOpen) && activeTab.contentType !== 'sftp');
 
-  // Desktop-style backdrop, all stops derived from the active theme tokens:
-  // ambient accent glows in the corners over a diagonal base ramp (lighter at
-  // the top, deeper at the bottom). Dark themes get a second glow bottom-left;
-  // the light theme stays airier with one. TitleBar/StatusBar/panels stay
-  // transparent or solid so this reads as one continuous desk surface.
-  const backdrop = currentTheme.light
-    ? [
-        `radial-gradient(1200px 720px at 82% -12%, ${currentTheme.accentSoft}, transparent 62%)`,
-        `radial-gradient(760px 460px at -8% 108%, ${currentTheme.accentSoft}, transparent 46%)`,
-        `linear-gradient(168deg, ${currentTheme.bgCanvas} 0%, ${currentTheme.bgSurface} 45%, ${currentTheme.bgBase} 100%)`,
-      ].join(', ')
-    : [
-        `radial-gradient(1200px 720px at 82% -12%, ${currentTheme.accentSoft}, transparent 62%)`,
-        `radial-gradient(1000px 640px at -12% 112%, ${currentTheme.accentSoft}, transparent 58%)`,
-        `linear-gradient(168deg, ${shadeHex(currentTheme.bgSurface, 0.05)} 0%, ${currentTheme.bgSurface} 40%, ${shadeHex(currentTheme.bgBase, -0.28)} 100%)`,
-      ].join(', ');
+  // Flat desk tone — no gradient. Chrome (title bar + nav rail) reads as the
+  // exact surface color in both modes: no accent wash is layered on top.
+  const deskTone = currentTheme.bgSurface;
+
+  // Desktop feel: the main panels (stage, docked drawers) use a half-faded
+  // hairline instead of the crisp outline so edges blend into the desk tone.
+  const panelBorder = `color-mix(in oklab, ${currentTheme.borderSubtle} 65%, transparent)`;
 
   return (
     <I18nProvider languagePref={preferences.language}>
     <div
       className={`soft-chrome h-screen w-screen overflow-hidden flex flex-col antialiased transition-colors duration-200 ${currentTheme.light ? 'theme-light' : ''}`}
       style={{
-        backgroundColor: currentTheme.bgSurface,
-        backgroundImage: backdrop,
+        backgroundColor: deskTone,
         color: currentTheme.textPrimary,
         ['--focus-ring' as string]: currentTheme.accentPrimary,
+        ['--panel-border' as string]: panelBorder,
       }}
     >
       {/* 1. Integrated Header (Merged TitleBar + Tab Bar) */}
@@ -1102,8 +1093,9 @@ export default function App() {
         onToggleDrawerPin={() => setDrawerPinned((prev) => !prev)}
       />
 
-      {/* 2. Main Workspace Layout */}
-      <div className="flex-1 flex overflow-hidden relative">
+      {/* 2. Main Workspace Layout. pb-1 mirrors the stage's mr-1 so the bottom
+          edge gets the same 4px breathing room as the right edge. */}
+      <div className="flex-1 flex overflow-hidden relative pb-1">
         {/* Global Left Narrow Sidebar (Hidden in Zen mode) */}
         {!isZenMode && (
           <Sidebar
@@ -1123,7 +1115,7 @@ export default function App() {
 
         {/* AI Copilot Drawer — docked on the LEFT, right after the icon sidebar */}
         {activeSidebarNav === 'ai' && (
-          <ResizableDock widthPct={dockWidthPct} onChange={setDockWidthPct} onReset={resetDockWidth} theme={currentTheme}>
+          <ResizableDock widthPct={dockWidthPct} onChange={setDockWidthPct} onReset={resetDockWidth} onCollapse={() => setActiveSidebarNav(null)} theme={currentTheme}>
             <AICopilotDrawer
               className={DOCKED_LEFT_DRAWER_CLASS}
               isOpen={true}
@@ -1138,7 +1130,7 @@ export default function App() {
 
         {/* Left Side Docked Drawers: SFTP / Hosts / Snippets (unified resizable dock) */}
         {(activeSidebarNav === 'sftp' || dockedSftpOpen) && activeTab.contentType !== 'sftp' && (
-          <ResizableDock widthPct={dockWidthPct} onChange={setDockWidthPct} onReset={resetDockWidth} theme={currentTheme}>
+          <ResizableDock widthPct={dockWidthPct} onChange={setDockWidthPct} onReset={resetDockWidth} onCollapse={() => { setDockedSftpOpen(false); setActiveSidebarNav(null); }} theme={currentTheme}>
             <SFTPDrawer
               className={DOCKED_LEFT_DRAWER_CLASS}
               theme={currentTheme}
@@ -1156,7 +1148,7 @@ export default function App() {
         )}
 
         {activeSidebarNav === 'hosts' && (
-          <ResizableDock widthPct={dockWidthPct} onChange={setDockWidthPct} onReset={resetDockWidth} theme={currentTheme}>
+          <ResizableDock widthPct={dockWidthPct} onChange={setDockWidthPct} onReset={resetDockWidth} onCollapse={() => setActiveSidebarNav(null)} theme={currentTheme}>
             <HostDrawer
             className={DOCKED_LEFT_DRAWER_CLASS}
             isOpen={true}
@@ -1176,7 +1168,7 @@ export default function App() {
         )}
 
         {activeSidebarNav === 'snippets' && (
-          <ResizableDock widthPct={dockWidthPct} onChange={setDockWidthPct} onReset={resetDockWidth} theme={currentTheme}>
+          <ResizableDock widthPct={dockWidthPct} onChange={setDockWidthPct} onReset={resetDockWidth} onCollapse={() => setActiveSidebarNav(null)} theme={currentTheme}>
             <SnippetsDrawer
               className={DOCKED_LEFT_DRAWER_CLASS}
               isOpen={true}
@@ -1191,7 +1183,7 @@ export default function App() {
         )}
 
         {activeSidebarNav === 'test' && (
-          <ResizableDock widthPct={testDockWidthPct} onChange={setTestDockWidthPct} onReset={resetTestDockWidth} theme={currentTheme}>
+          <ResizableDock widthPct={testDockWidthPct} onChange={setTestDockWidthPct} onReset={resetTestDockWidth} onCollapse={() => setActiveSidebarNav(null)} theme={currentTheme}>
             <TestDrawer
               className={DOCKED_LEFT_DRAWER_CLASS}
               theme={currentTheme}
@@ -1203,18 +1195,19 @@ export default function App() {
           </ResizableDock>
         )}
 
-        {/* Center Main Stage. The left gap only exists to separate the stage card
-            from an open drawer card; with everything collapsed the rail already
-            provides the visual break, so drop the margin to avoid a dead strip —
-            except in Zen mode, where the rail is hidden and the stage would
-            otherwise sit flush against the window edge (right keeps its mr gap).
-            The breathing room lives on the right edge (mr) instead of squeezing
-            the drawer against the terminal. */}
+        {/* Center Main Stage. With a drawer docked, the drawer's own right border
+            is the single 1px divider: the stage sits flush with no left margin or
+            left border of its own, so the seam never doubles up. In Zen mode the
+            rail is hidden, so the stage keeps a small left margin against the
+            window edge (right keeps its mr gap). */}
         <div
-          className={`flex-1 flex flex-col overflow-hidden min-w-0 rounded-lg border mr-1 ${
-            leftDrawerOpen || isZenMode ? 'ml-1' : ''
-          }`}
-          style={{ backgroundColor: currentTheme.bgCanvas, borderColor: currentTheme.borderSubtle }}
+          className={`flex-1 flex flex-col overflow-hidden min-w-0 rounded-xl border mr-1 ${
+            leftDrawerOpen ? 'rounded-l-none border-l-0' : ''
+          } ${isZenMode ? 'ml-1' : ''}`}
+          style={{
+            backgroundColor: currentTheme.bgCanvas,
+            borderColor: `var(--panel-border, ${currentTheme.borderSubtle})`,
+          }}
         >
 
           {/* Dynamic Content View */}
@@ -1352,20 +1345,11 @@ export default function App() {
 
       {/* Session log saved toast */}
       {logToast && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-xl border text-xs animate-in fade-in"
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[70] px-4 py-2 rounded-xl border text-xs animate-in fade-in"
           style={{ backgroundColor: currentTheme.bgSurface, borderColor: currentTheme.borderHover, color: currentTheme.textPrimary }}>
           {logToast}
         </div>
       )}
-
-      {/* 3. Bottom Minimalist Status Bar */}
-      <StatusBar
-        host={activeHost}
-        theme={currentTheme}
-        local={isLocalTab}
-        onOpenAICopilot={() => setActiveSidebarNav('ai')}
-        isSplit={isSplitPane}
-      />
 
       {/* 4. Overlays & Dialogs */}
       {/* Command Palette (Raycast / Warp style Cmd+K) */}

@@ -159,7 +159,7 @@ const StorageTab: React.FC<{
           <button
             onClick={() => void handleClear()}
             disabled={busy || !stats}
-            className={`px-2.5 py-1.5 rounded-lg border border-amber-500/40 hover:border-amber-500 hover:bg-amber-500/20 text-[10px] font-semibold transition-colors disabled:opacity-40 ${
+            className={`px-2.5 py-1.5 rounded-lg border border-amber-500/40 hover:bg-amber-500/20 text-[10px] font-semibold transition-colors disabled:opacity-40 ${
               theme.light ? 'text-amber-700 bg-amber-500/10' : 'text-amber-300 bg-amber-500/10'
             }`}
           >
@@ -168,7 +168,7 @@ const StorageTab: React.FC<{
           <button
             onClick={() => void handleReset()}
             disabled={busy || !stats}
-            className={`px-2.5 py-1.5 rounded-lg border border-rose-500/40 hover:border-rose-500 hover:bg-rose-500/20 text-[10px] font-semibold transition-colors disabled:opacity-40 ${
+            className={`px-2.5 py-1.5 rounded-lg border border-rose-500/40 hover:bg-rose-500/20 text-[10px] font-semibold transition-colors disabled:opacity-40 ${
               theme.light ? 'text-rose-700 bg-rose-500/10' : 'text-rose-300 bg-rose-500/10'
             }`}
           >
@@ -285,7 +285,7 @@ const McpTab: React.FC<{
         </label>
         <pre
           className="p-3 rounded-xl border font-mono text-[10px] text-slate-300 overflow-x-auto leading-relaxed"
-          style={{ backgroundColor: theme.bgCanvas, borderColor: theme.borderSubtle }}
+          style={{ backgroundColor: theme.bgInput, borderColor: theme.borderSubtle }}
         >
           {configJson}
         </pre>
@@ -396,7 +396,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         <div 
           className="flex items-center justify-between px-2.5 py-1.5 shrink-0"
           style={{
-            backgroundColor: theme.bgBase,
+            backgroundColor: theme.bgSurface,
             borderColor: theme.borderSubtle,
           }}
         >
@@ -449,16 +449,19 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         </div>
 
         {/* Master-Detail Two Column Layout */}
-        <div className="flex flex-1 min-h-0 overflow-hidden" style={{ backgroundColor: theme.bgBase }}>
+        <div className="flex flex-1 min-h-0 overflow-hidden" style={{ backgroundColor: theme.bgSurface }}>
           {/* Left Category Sidebar */}
           <div
             className="w-40 shrink-0 flex flex-col p-2 select-none"
-            style={{ backgroundColor: theme.bgBase }}
+            style={{ backgroundColor: theme.bgSurface }}
           >
             <div className="space-y-4">
               {navGroups.map(({ group, tabs }) => (
                 <div key={group} className="space-y-1.5">
-                  <div className="px-2.5 mb-2 text-[10px] font-medium uppercase tracking-wider text-slate-500/80 leading-none">
+                  <div
+                    className="px-2.5 mb-2 text-[10px] font-medium uppercase tracking-wider leading-none"
+                    style={{ color: theme.textMuted }}
+                  >
                     {group}
                   </div>
                   {tabs.map((tab) => {
@@ -473,13 +476,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         }}
                         title={tab.desc}
                         className={`w-full flex items-center gap-2 px-2.5 py-1 rounded-lg text-[11px] font-medium text-left transition-all ${
-                          isActive
-                            ? 'text-white font-semibold'
-                            : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
+                          isActive ? 'font-semibold' : 'hover:bg-white/5 hover:text-[var(--nav-hover-text)]'
                         }`}
                         style={{
                           backgroundColor: isActive ? theme.bgActive : 'transparent',
-                          color: isActive ? theme.accentPrimary : undefined,
+                          color: isActive ? (theme.light ? theme.textPrimary : theme.accentPrimary) : theme.textSecondary,
+                          ...(isActive
+                            ? {}
+                            : ({ ['--nav-hover-text' as string]: theme.textPrimary } as React.CSSProperties)),
                         }}
                       >
                         <Icon className="w-4 h-4 shrink-0" />
@@ -495,7 +499,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {/* Right Main Settings Pane */}
           <div 
             className="flex-1 px-4 py-3 overflow-y-auto space-y-3 text-[11px] text-slate-200 rounded-l-2xl border-l"
-            style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderSubtle }}
+            style={{ backgroundColor: theme.bgCanvas, borderColor: theme.borderSubtle }}
           >
             {/* 1. 语言与地区 (Language) */}
             {activeTab === 'language' && (
@@ -516,8 +520,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         onClick={() => onUpdatePreference('language', item.id as any)}
                         className={`px-2 py-1 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                           (preferences.language ? preferences.language === item.id : resolveLang(preferences.language) === item.id) 
-                            ? 'border-sky-500 bg-sky-500/10 text-white' 
-                            : 'border-white/10 hover:border-white/20 bg-black/20 text-slate-300'
+                            ? 'bg-sky-500/10 text-white'
+                            : 'border-white/10 bg-black/20 text-slate-300'
                         }`}
                       >
                         <div>
@@ -548,7 +552,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         onClick={() => onUpdatePreference('terminalEncoding', enc.id as any)}
                         className={`px-2 py-1 rounded-lg border text-[10px] transition-colors flex-1 text-left ${
                           preferences.terminalEncoding === enc.id
-                            ? 'bg-emerald-500/15 border-emerald-500 text-white font-medium'
+                            ? 'bg-emerald-500/15 text-white font-medium'
                             : 'border-white/10 bg-black/20 text-slate-400 hover:text-slate-200'
                         }`}
                       >
@@ -575,8 +579,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         onClick={() => onUpdatePreference('timeFormat', fmt.id as any)}
                         className={`px-2 py-1 rounded-xl border cursor-pointer transition-all ${
                           preferences.timeFormat === fmt.id
-                            ? 'border-amber-500 bg-amber-500/10 text-white'
-                            : 'border-white/10 hover:border-white/20 bg-black/20 text-slate-300'
+                            ? 'bg-amber-500/10 text-white'
+                            : 'border-white/10 bg-black/20 text-slate-300'
                         }`}
                       >
                         <div className="font-medium text-[10px]">{fmt.label}</div>
@@ -607,8 +611,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         onClick={() => onSelectTheme(th)}
                         className={`px-2 py-1 rounded-xl border cursor-pointer transition-all ${
                           theme.id === th.id
-                            ? 'border-sky-400 bg-white/10 ring-1 ring-sky-400/30'
-                            : 'border-white/10 hover:border-white/20 bg-black/20'
+                            ? 'bg-white/10'
+                            : 'border-white/10 bg-black/20'
                         }`}
                       >
                           <div className="flex items-center justify-between mb-1">
@@ -724,7 +728,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         onClick={() => onUpdatePreference('cursorStyle', cur.id as any)}
                         className={`px-2 py-1 rounded-xl border cursor-pointer transition-all ${
                           preferences.cursorStyle === cur.id
-                            ? 'border-purple-500 bg-purple-500/10 text-white font-semibold'
+                            ? 'bg-purple-500/10 text-white font-semibold'
                             : 'border-white/10 bg-black/20 text-slate-400 hover:text-slate-200'
                         }`}
                       >
@@ -1010,7 +1014,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         onClick={() => onUpdatePreference('aiModel', model.name)}
                         className={`px-2 py-1 rounded-xl border cursor-pointer transition-all ${
                           preferences.aiModel.includes(model.id.split('-')[0]) || preferences.aiModel === model.name
-                            ? 'border-purple-400 bg-purple-500/10 text-white'
+                            ? 'bg-purple-500/10 text-white'
                             : 'border-white/10 bg-black/20 text-slate-400 hover:text-slate-200'
                         }`}
                       >
@@ -1198,7 +1202,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         setCopiedNotification(t('settings.resetDone'));
                         setTimeout(() => setCopiedNotification(null), 2500);
                       }}
-                      className={`flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-rose-500/40 hover:border-rose-500 hover:bg-rose-500/20 text-[10px] font-semibold transition-colors ${
+                      className={`flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-rose-500/40 hover:bg-rose-500/20 text-[10px] font-semibold transition-colors ${
                         theme.light ? 'text-rose-700 bg-rose-500/10' : 'text-rose-300 bg-rose-500/10'
                       }`}
                     >
@@ -1293,7 +1297,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         <div 
           className="flex items-center justify-between px-3 py-1.5 shrink-0 select-none"
           style={{
-            backgroundColor: theme.bgBase,
+            backgroundColor: theme.bgSurface,
             borderColor: theme.borderSubtle,
           }}
         >

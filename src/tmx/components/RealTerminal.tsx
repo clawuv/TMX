@@ -40,10 +40,10 @@ function toXtermColor(color: string, fallback: string): string {
 
 function terminalTheme(theme: ThemeConfig) {
   return {
-    background: toXtermColor(theme.bgCanvas, '#191C24'),
+    background: toXtermColor(theme.bgCanvas, '#181818'),
     foreground: toXtermColor(theme.textPrimary, '#EDF2F7'),
     cursor: toXtermColor(theme.accentPrimary, '#38BDF8'),
-    cursorAccent: toXtermColor(theme.bgCanvas, '#191C24'),
+    cursorAccent: toXtermColor(theme.bgCanvas, '#181818'),
     selectionBackground: toXtermColor(theme.accentSoft, theme.bgActive),
     selectionForeground: toXtermColor(theme.textPrimary, '#EDF2F7'),
     black: toXtermColor(theme.ansi.black, '#252A34'),
@@ -262,7 +262,7 @@ export function RealTerminal({
   return (
     <div
       className="relative h-full w-full box-border"
-      style={{ padding: '5px', backgroundColor: toXtermColor(theme.bgCanvas, '#191C24') }}
+      style={{ padding: '5px', backgroundColor: toXtermColor(theme.bgCanvas, '#181818') }}
       onContextMenu={(e) => {
         // 右键粘贴开启时：直接把剪贴板内容写入 pty（PuTTY 风格），不弹菜单
         if (pasteOnRightClick) {

@@ -84,15 +84,14 @@ export const SnippetsDrawer: React.FC<SnippetsDrawerProps> = ({
       className={className || "w-[320px] shrink-0 h-full flex flex-col rounded-md border select-none transition-colors duration-150 z-20"}
       style={{
         backgroundColor: theme.bgCanvas,
-        borderColor: theme.borderSubtle,
+        borderColor: `var(--panel-border, ${theme.borderSubtle})`,
       }}
     >
       {/* Header */}
-      <div 
-        className="flex items-center justify-between h-10 px-3 border-b shrink-0"
+      <div
+        className="flex items-center justify-between h-7 px-3 shrink-0"
         style={{
           backgroundColor: theme.bgCanvas,
-          borderColor: theme.borderSubtle,
         }}
       >
         <div className="flex items-center gap-2">
@@ -170,7 +169,7 @@ export const SnippetsDrawer: React.FC<SnippetsDrawerProps> = ({
       )}
 
       {/* Filter and Search */}
-      <div className="p-3 border-b space-y-2 shrink-0" style={{ borderColor: theme.borderSubtle }}>
+      <div className="px-3 pb-3 pt-1.5 space-y-2 shrink-0">
         <div 
           className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs"
           style={{
@@ -220,7 +219,7 @@ export const SnippetsDrawer: React.FC<SnippetsDrawerProps> = ({
         {filtered.map((s) => (
           <div
             key={s.id}
-            className="p-2.5 rounded-xl border space-y-1.5 group hover:border-white/20 transition-all"
+            className="p-2.5 rounded-xl border space-y-1.5 group transition-all"
             style={{ backgroundColor: theme.bgSurface, borderColor: theme.borderSubtle }}
           >
             <div className="flex items-center justify-between gap-2 h-5">

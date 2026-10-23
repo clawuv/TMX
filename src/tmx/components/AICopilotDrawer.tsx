@@ -89,15 +89,14 @@ export const AICopilotDrawer: React.FC<AICopilotDrawerProps> = ({
       className={className || "w-[320px] shrink-0 h-full flex flex-col rounded-md border select-none transition-colors duration-150 z-20"}
       style={{
         backgroundColor: theme.bgCanvas,
-        borderColor: theme.borderSubtle,
+        borderColor: `var(--panel-border, ${theme.borderSubtle})`,
       }}
     >
       {/* Header (model status moved up here) */}
-      <div 
-        className="flex items-center justify-between h-10 px-3 border-b shrink-0"
+      <div
+        className="flex items-center justify-between h-7 pl-3 pr-2 shrink-0"
         style={{
           backgroundColor: theme.bgCanvas,
-          borderColor: theme.borderSubtle,
         }}
       >
         <div className="flex items-center gap-2">
@@ -114,7 +113,7 @@ export const AICopilotDrawer: React.FC<AICopilotDrawerProps> = ({
       </div>
 
       {/* History and Suggestions */}
-      <div className="flex-1 overflow-y-auto p-2 space-y-2 text-xs">
+      <div className="flex-1 overflow-y-auto px-2 pb-2 pt-1 space-y-2 text-xs">
         {history.length === 0 && (
           <div className="py-10 text-center space-y-1.5">
             <div className="text-xs text-slate-400">{t('ai.empty')}</div>
@@ -180,10 +179,7 @@ export const AICopilotDrawer: React.FC<AICopilotDrawerProps> = ({
       {/* Input form */}
       <form
         onSubmit={handleSubmit}
-        className="p-3 border-t shrink-0 space-y-2"
-        style={{
-          borderColor: theme.borderSubtle,
-        }}
+        className="p-3 shrink-0 space-y-2"
       >
         <div
           className="flex items-center gap-2 p-2 rounded-xl border focus-within:border-sky-400 transition-colors"

@@ -593,7 +593,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
       }
       style={{
         backgroundColor: theme.bgCanvas,
-        borderColor: theme.borderSubtle,
+        borderColor: `var(--panel-border, ${theme.borderSubtle})`,
       }}
       onDragOver={(e) => {
         e.preventDefault();
@@ -634,10 +634,9 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
 
       {/* SFTP Header */}
       <div
-        className="flex items-center justify-between h-10 px-3 border-b shrink-0"
+        className="flex items-center justify-between h-7 pl-3 pr-2 shrink-0"
         style={{
           backgroundColor: theme.bgCanvas,
-          borderColor: theme.borderSubtle,
         }}
       >
         <div className="flex items-center gap-2 min-w-0">
@@ -656,14 +655,6 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
             className="p-1 rounded text-slate-400 hover:text-slate-200 hover:bg-white/10 transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate-400"
           >
             <Plus className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={() => void loadPath(currentPath)}
-            disabled={!hasRemoteHost}
-            title={t('sftp.refreshDir')}
-            className="p-1 rounded text-slate-400 hover:text-slate-200 hover:bg-white/10 transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate-400"
-          >
-            <RefreshCw className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
@@ -686,7 +677,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
 
       {/* Path Breadcrumb & Search */}
       {connState !== 'error' && connState !== 'idle' && (
-        <div className="p-2 space-y-1.5 border-b shrink-0" style={{ borderColor: theme.borderSubtle }}>
+        <div className="px-2 pb-2 pt-1 space-y-1.5 shrink-0">
           <div className="flex items-center gap-1">
             <button
               onClick={() => void loadPath(parentPath(currentPath))}
@@ -739,22 +730,32 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
             </div>
           </div>
 
-          {/* Search */}
-          <div
-            className="flex items-center gap-1.5 px-2 py-1 rounded text-xs border"
-            style={{
-              backgroundColor: theme.bgInput,
-              borderColor: theme.borderSubtle,
-            }}
-          >
-            <Search className="w-3.5 h-3.5 text-slate-500" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t('sftp.searchPlaceholder')}
-              className="w-full bg-transparent border-none outline-none text-xs text-slate-200 placeholder-slate-500"
-            />
+          {/* Refresh + Search */}
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => void loadPath(currentPath)}
+              disabled={!hasRemoteHost}
+              title={t('sftp.refreshDir')}
+              className="p-1 rounded text-slate-400 hover:text-slate-200 hover:bg-white/10 transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate-400 shrink-0"
+            >
+              <RefreshCw className="w-3.25 h-3.25" />
+            </button>
+            <div
+              className="flex items-center gap-1.5 px-2 py-1 rounded text-xs border flex-1 min-w-0"
+              style={{
+                backgroundColor: theme.bgInput,
+                borderColor: theme.borderSubtle,
+              }}
+            >
+              <Search className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={t('sftp.searchPlaceholder')}
+                className="w-full bg-transparent border-none outline-none text-xs text-slate-200 placeholder-slate-500"
+              />
+            </div>
           </div>
         </div>
       )}
@@ -954,7 +955,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
 
       {/* Transfer Queue Panel */}
       {transfers.length > 0 && (
-        <div className="border-t shrink-0" style={{ borderColor: theme.borderSubtle }}>
+        <div className="shrink-0">
           <div
             className="flex items-center justify-between px-2.5 py-1.5 cursor-pointer hover:bg-white/5 transition-colors"
             onClick={() => setQueueOpen((v) => !v)}
@@ -1078,7 +1079,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
       {connState === 'connected' && (
         <div
           onClick={() => fileInputRef.current?.click()}
-          className="mx-3 my-2 h-[55px] px-2 flex flex-col items-center justify-center rounded-xl border border-dashed text-center cursor-pointer transition-all hover:border-sky-400/50 group shrink-0"
+          className="mx-3 my-2 h-[55px] px-2 flex flex-col items-center justify-center rounded-xl border border-dashed text-center cursor-pointer transition-all group shrink-0"
           style={{
             backgroundColor: theme.bgBase,
             borderColor: theme.borderSubtle,

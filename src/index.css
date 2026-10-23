@@ -22,15 +22,15 @@
   html {
     min-width: 320px;
     height: 100%;
-    background: #15181F;
+    background: #282A2A;
   }
 
   body {
     min-width: 320px;
     height: 100%;
     margin: 0;
-    background: #15181F;
-    color: #e2e8f0;
+    background: #282A2A;
+    color: #eceded;
     overflow: hidden;
     user-select: none;
   }
@@ -110,6 +110,15 @@
   z-index: 11;
 }
 
+/* The hand pointer is a web idiom; desktop apps keep the regular system arrow
+   even over clickable rows and option cards. This unlayered rule outranks
+   Tailwind's utilities layer, so every .cursor-pointer utility in the markup
+   resolves to the arrow. Resize handles keep their standard system cursors
+   (col-resize etc.) — those are regular cursors too. */
+.cursor-pointer {
+  cursor: default;
+}
+
 .window-caption-button {
   width: 36px;
   height: 28px;
@@ -160,7 +169,7 @@
   color: #fff;
 }
 
-/* Hover highlight for inactive top tabs & sidebar nav icons (theme colors via CSS vars) */
+/* Inactive top tabs fill with the theme hover background on hover; no border. */
 .tab-item {
   background-color: transparent;
   border-color: transparent;
@@ -168,11 +177,10 @@
 
 .tab-item:hover {
   background-color: var(--hover-bg);
-  border-color: var(--hover-border);
 }
 
-/* Sidebar nav icons mirror the top tab treatment: invisible pill outline that
-   fills with the theme hover background + border on hover. */
+/* Sidebar nav icons mirror the top tabs: hover fills the theme hover
+   background only, with no border line. */
 .sidebar-nav-item {
   background-color: transparent;
   border-color: transparent;
@@ -180,7 +188,6 @@
 
 .sidebar-nav-item:hover {
   background-color: var(--hover-bg);
-  border-color: var(--hover-border);
 }
 
 /* Shared hover highlight for toolbar controls (theme colors via CSS vars) */
@@ -217,7 +224,7 @@
    Host list rows in HostDrawer share the same row pattern. */
 .sftp-file-row:hover,
 .host-row:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 /* Light theme: the white row hover above is invisible on light surfaces —
@@ -225,7 +232,7 @@
    white/x utilities flip through --color-white under .theme-light). */
 .theme-light .sftp-file-row:hover,
 .theme-light .host-row:hover {
-  background-color: color-mix(in oklab, var(--color-white) 5%, transparent);
+  background-color: color-mix(in oklab, var(--color-white) 8%, transparent);
 }
 
 /* Light theme (Cloud Mist): flip the hardcoded slate text scale & input overlays.
@@ -233,15 +240,15 @@
    class on the app root adapts every hardcoded dark-theme text color. */
 .theme-light {
   color-scheme: light;
-  --color-white: #0f172a;
-  --color-black: #94a3b8;
-  --color-slate-100: #0f172a;
-  --color-slate-200: #1e293b;
-  --color-slate-300: #334155;
-  --color-slate-400: #64748b;
-  --color-slate-500: #94a3b8;
-  --color-slate-900: #e2e8f0;
-  --color-slate-950: #f8fafc;
+  --color-white: #1a1a1a;
+  --color-black: #999999;
+  --color-slate-100: #1a1a1a;
+  --color-slate-200: #333333;
+  --color-slate-300: #595959;
+  --color-slate-400: #737373;
+  --color-slate-500: #999999;
+  --color-slate-900: #ececec;
+  --color-slate-950: #f5f5f5;
   /* 400-level accent icons/text get darker for light backgrounds */
   --color-sky-300: #0369a1;
   --color-sky-400: #0284c7;
@@ -255,16 +262,13 @@
 /* Dark themes: lift the faintest hairline utility borders one step so cards,
    rows and inputs read clearly on the deep backgrounds. Scoped with :has() so
    the light theme keeps its original look (it maps --color-white to dark slate
-   and relies on the faint lines). Also re-step the matching hover variant so
-   the hover affordance stays a visible step above the new resting border. */
+   and relies on the faint lines). Hover never re-steps a border: hover and
+   selected states communicate through background fills only. */
 body:not(:has(.theme-light)) .border-white\/5 {
   border-color: rgba(255, 255, 255, 0.08);
 }
 body:not(:has(.theme-light)) .border-white\/10 {
   border-color: rgba(255, 255, 255, 0.12);
-}
-body:not(:has(.theme-light)) .hover\:border-white\/20:hover {
-  border-color: rgba(255, 255, 255, 0.24);
 }
 
 /* Terminal scrollbar (xterm 6 renders its own VS Code-style scrollbar) —
