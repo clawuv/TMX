@@ -15,9 +15,9 @@ export interface WindowBounds {
 }
 
 const STATE_KEY = 'windowBounds'
-const DEFAULT_WIDTH = 1280
+const DEFAULT_WIDTH = 920
 const DEFAULT_HEIGHT = 800
-const MIN_WIDTH = 940
+const MIN_WIDTH = 920
 const MIN_HEIGHT = 620
 
 export function restoreWindowBounds(): WindowBounds {

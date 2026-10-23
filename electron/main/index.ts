@@ -161,7 +161,7 @@ async function createWindow() {
     show: false,
     // Solid background prevents flashes while resizing.
     backgroundColor: '#15181F',
-    minWidth: 940,
+    minWidth: 920,
     minHeight: 620,
     // On Windows, draw the caption buttons in the same surface as the header.
     // The native overlay can retain a bright seam during maximize/restore.

@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { 
+import {
   Activity,
-  Plus, 
-  Search, 
-  Wifi,  
-  Star, 
-  ChevronRight, 
-  KeyRound, 
+  Monitor,
+  Plus,
+  Search,
+  Wifi,
+  ChevronRight,
+  KeyRound,
   Trash2,
   Terminal,
   Pin
@@ -380,20 +380,22 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
               }}
               className="host-row group relative flex h-[30px] items-center gap-2 px-2 py-1.5 rounded-lg cursor-pointer transition-colors border"
               style={{
-                backgroundColor: isActive ? theme.bgActive : 'transparent',
-                borderColor: isActive ? theme.borderHover : 'transparent',
+                // Only the active row sets an inline background; hovering is
+                // owned by the .host-row:hover CSS rule (inline styles would
+                // otherwise suppress it).
+                ...(isActive ? { backgroundColor: theme.bgActive } : {}),
+                borderColor: 'transparent',
               }}
+              title={isVirtual ? 'user@localhost' : `${h.user}@${h.host}:${h.port}`}
             >
-              <div
-                className={`w-2 h-2 rounded-full shrink-0 ${connectingHostId === h.id ? 'animate-pulse' : ''}`}
-                style={{ backgroundColor: connectingHostId === h.id ? theme.accentWarning : theme.accentSuccess }}
+              <Monitor
+                className={`w-3 h-3 shrink-0 text-slate-100 ${connectingHostId === h.id ? 'animate-pulse' : ''}`}
               />
-              <span className="font-semibold text-xs text-slate-100 font-mono truncate shrink-0 max-w-[45%]">
-                {h.name}
-              </span>
 
-              <span className="flex-1 min-w-0 text-right text-[11px] text-slate-400 font-mono truncate">
-                {isVirtual ? 'user@localhost' : `${h.user}@${h.host}:${h.port}`}
+              {/* Xshell-style compact row: the session name is the only text;
+                  connection details live in the row tooltip. */}
+              <span className="flex-1 min-w-0 truncate text-xs font-medium text-slate-100">
+                {h.name}
               </span>
 
               {/* Hover actions chip — absolutely positioned like SFTP rows so
@@ -441,7 +443,7 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
                     className="p-1 shrink-0"
                     title={t('hosts.favorite')}
                   >
-                    <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                    <Pin className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
                   </span>
                 ) : (
                 <button
@@ -453,7 +455,7 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
                   className="p-1 rounded hover:bg-white/10 transition-colors shrink-0"
                   title={h.favorite ? t('hosts.unfavorite') : t('hosts.favorite')}
                 >
-                  <Star className={`w-3.5 h-3.5 transition-colors ${
+                  <Pin className={`w-3.5 h-3.5 transition-colors ${
                     h.favorite ? 'text-amber-400 fill-amber-400' : 'text-slate-500 hover:text-amber-400'
                   }`} />
                 </button>
@@ -470,32 +472,13 @@ export const HostDrawer: React.FC<HostDrawerProps> = ({
           const localEntry = filteredHosts.find((h) => h.id === 'local');
           const savedHosts = filteredHosts.filter((h) => h.id !== 'local');
           const favorites = savedHosts.filter((h) => h.favorite);
-          const sectionGroups = groups
-            .filter((g) => g !== 'All')
-            .filter((g) => savedHosts.some((h) => !h.favorite && h.group === g));
 
           return (
             <>
               {localEntry && renderHost(localEntry)}
-              {favorites.length > 0 && (
-                <div className="px-2 pt-1 pb-0.5 text-[10px] font-medium tracking-wider text-amber-400/80">
-                  {t('hosts.favorites', { count: favorites.length })}
-                </div>
-              )}
+              {/* Pinned hosts first, then the rest flat — no section headers. */}
               {favorites.map(renderHost)}
-              {sectionGroups.map((g) => {
-                const members = savedHosts.filter((h) => !h.favorite && h.group === g);
-                // Fragment keeps rows flat children of the space-y list — a
-                // wrapper div would swallow the inter-row gaps.
-                return (
-                  <React.Fragment key={g}>
-                    <div className="px-2 pt-2 pb-0.5 text-[10px] font-medium tracking-wider text-slate-500">
-                      {g} ({members.length})
-                    </div>
-                    {members.map(renderHost)}
-                  </React.Fragment>
-                );
-              })}
+              {savedHosts.filter((h) => !h.favorite).map(renderHost)}
             </>
           );
         })()}
