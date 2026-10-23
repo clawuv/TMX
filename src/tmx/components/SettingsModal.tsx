@@ -480,7 +480,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         }`}
                         style={{
                           backgroundColor: isActive ? theme.bgActive : 'transparent',
-                          color: isActive ? theme.accentPrimary : theme.textSecondary,
+                          color: isActive ? (theme.light ? theme.textPrimary : theme.accentPrimary) : theme.textSecondary,
                           ...(isActive
                             ? {}
                             : ({ ['--nav-hover-text' as string]: theme.textPrimary } as React.CSSProperties)),

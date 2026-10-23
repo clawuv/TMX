@@ -89,7 +89,7 @@ export const SnippetsDrawer: React.FC<SnippetsDrawerProps> = ({
     >
       {/* Header */}
       <div
-        className="flex items-center justify-between h-10 px-3 shrink-0"
+        className="flex items-center justify-between h-7 px-3 shrink-0"
         style={{
           backgroundColor: theme.bgCanvas,
         }}
@@ -169,7 +169,7 @@ export const SnippetsDrawer: React.FC<SnippetsDrawerProps> = ({
       )}
 
       {/* Filter and Search */}
-      <div className="p-3 space-y-2 shrink-0">
+      <div className="px-3 pb-3 pt-1.5 space-y-2 shrink-0">
         <div 
           className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs"
           style={{

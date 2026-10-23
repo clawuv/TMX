@@ -309,7 +309,7 @@ const zhCN = {
     localHost: '本机',
   },
   dock: {
-    resizeHint: '拖拽调整宽度 · 双击重置',
+    resizeHint: '拖拽调整宽度 · 双击收起面板',
   },
   settings: {
     title: '偏好设置',

@@ -93,7 +93,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 onClick={() => onSelectNav(item.id)}
                 className={`app-region-no-drag relative w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-150 border ${isActive ? '' : 'sidebar-nav-item'}`}
                 style={{
-                  color: isActive ? theme.accentPrimary : theme.textSecondary,
+                  color: isActive ? (theme.light ? theme.textPrimary : theme.accentPrimary) : theme.textSecondary,
                   ...(isActive
                     ? { backgroundColor: theme.bgActive, borderColor: 'transparent' }
                     : ({ '--hover-bg': theme.bgActive } as React.CSSProperties)),
@@ -174,7 +174,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 onClick={() => onSelectNav(item.id)}
                 className={`app-region-no-drag w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-150 border ${isActive ? '' : 'sidebar-nav-item'}`}
                 style={{
-                  color: isActive ? theme.accentPrimary : theme.textSecondary,
+                  color: isActive ? (theme.light ? theme.textPrimary : theme.accentPrimary) : theme.textSecondary,
                   ...(isActive
                     ? { backgroundColor: theme.bgActive, borderColor: 'transparent' }
                     : ({ '--hover-bg': theme.bgActive } as React.CSSProperties)),

@@ -1115,7 +1115,7 @@ export default function App() {
 
         {/* AI Copilot Drawer — docked on the LEFT, right after the icon sidebar */}
         {activeSidebarNav === 'ai' && (
-          <ResizableDock widthPct={dockWidthPct} onChange={setDockWidthPct} onReset={resetDockWidth} theme={currentTheme}>
+          <ResizableDock widthPct={dockWidthPct} onChange={setDockWidthPct} onReset={resetDockWidth} onCollapse={() => setActiveSidebarNav(null)} theme={currentTheme}>
             <AICopilotDrawer
               className={DOCKED_LEFT_DRAWER_CLASS}
               isOpen={true}
@@ -1130,7 +1130,7 @@ export default function App() {
 
         {/* Left Side Docked Drawers: SFTP / Hosts / Snippets (unified resizable dock) */}
         {(activeSidebarNav === 'sftp' || dockedSftpOpen) && activeTab.contentType !== 'sftp' && (
-          <ResizableDock widthPct={dockWidthPct} onChange={setDockWidthPct} onReset={resetDockWidth} theme={currentTheme}>
+          <ResizableDock widthPct={dockWidthPct} onChange={setDockWidthPct} onReset={resetDockWidth} onCollapse={() => { setDockedSftpOpen(false); setActiveSidebarNav(null); }} theme={currentTheme}>
             <SFTPDrawer
               className={DOCKED_LEFT_DRAWER_CLASS}
               theme={currentTheme}
@@ -1148,7 +1148,7 @@ export default function App() {
         )}
 
         {activeSidebarNav === 'hosts' && (
-          <ResizableDock widthPct={dockWidthPct} onChange={setDockWidthPct} onReset={resetDockWidth} theme={currentTheme}>
+          <ResizableDock widthPct={dockWidthPct} onChange={setDockWidthPct} onReset={resetDockWidth} onCollapse={() => setActiveSidebarNav(null)} theme={currentTheme}>
             <HostDrawer
             className={DOCKED_LEFT_DRAWER_CLASS}
             isOpen={true}
@@ -1168,7 +1168,7 @@ export default function App() {
         )}
 
         {activeSidebarNav === 'snippets' && (
-          <ResizableDock widthPct={dockWidthPct} onChange={setDockWidthPct} onReset={resetDockWidth} theme={currentTheme}>
+          <ResizableDock widthPct={dockWidthPct} onChange={setDockWidthPct} onReset={resetDockWidth} onCollapse={() => setActiveSidebarNav(null)} theme={currentTheme}>
             <SnippetsDrawer
               className={DOCKED_LEFT_DRAWER_CLASS}
               isOpen={true}
@@ -1183,7 +1183,7 @@ export default function App() {
         )}
 
         {activeSidebarNav === 'test' && (
-          <ResizableDock widthPct={testDockWidthPct} onChange={setTestDockWidthPct} onReset={resetTestDockWidth} theme={currentTheme}>
+          <ResizableDock widthPct={testDockWidthPct} onChange={setTestDockWidthPct} onReset={resetTestDockWidth} onCollapse={() => setActiveSidebarNav(null)} theme={currentTheme}>
             <TestDrawer
               className={DOCKED_LEFT_DRAWER_CLASS}
               theme={currentTheme}

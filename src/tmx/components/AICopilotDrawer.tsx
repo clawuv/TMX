@@ -94,7 +94,7 @@ export const AICopilotDrawer: React.FC<AICopilotDrawerProps> = ({
     >
       {/* Header (model status moved up here) */}
       <div
-        className="flex items-center justify-between h-10 px-3 shrink-0"
+        className="flex items-center justify-between h-7 px-3 shrink-0"
         style={{
           backgroundColor: theme.bgCanvas,
         }}
@@ -113,7 +113,7 @@ export const AICopilotDrawer: React.FC<AICopilotDrawerProps> = ({
       </div>
 
       {/* History and Suggestions */}
-      <div className="flex-1 overflow-y-auto p-2 space-y-2 text-xs">
+      <div className="flex-1 overflow-y-auto px-2 pb-2 pt-1 space-y-2 text-xs">
         {history.length === 0 && (
           <div className="py-10 text-center space-y-1.5">
             <div className="text-xs text-slate-400">{t('ai.empty')}</div>
