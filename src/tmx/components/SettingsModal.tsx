@@ -386,7 +386,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       }}
     >
       <div 
-        className="w-full max-w-2xl h-[500px] max-h-[85vh] rounded-2xl border overflow-hidden flex flex-col text-slate-200"
+        className="w-full max-w-[600px] h-[500px] max-h-[85vh] rounded-2xl border overflow-hidden flex flex-col text-slate-200"
         style={{
           backgroundColor: theme.bgSurface,
           borderColor: theme.borderHover,
@@ -452,7 +452,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         <div className="flex flex-1 min-h-0 overflow-hidden" style={{ backgroundColor: theme.bgSurface }}>
           {/* Left Category Sidebar */}
           <div
-            className="w-40 shrink-0 flex flex-col p-2 select-none"
+            className="w-32 shrink-0 flex flex-col p-2 select-none"
             style={{ backgroundColor: theme.bgSurface }}
           >
             <div className="space-y-4">
