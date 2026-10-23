@@ -634,7 +634,7 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
 
       {/* SFTP Header */}
       <div
-        className="flex items-center justify-between h-7 px-3 shrink-0"
+        className="flex items-center justify-between h-7 pl-3 pr-2 shrink-0"
         style={{
           backgroundColor: theme.bgCanvas,
         }}
@@ -730,8 +730,16 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
             </div>
           </div>
 
-          {/* Search + refresh */}
+          {/* Refresh + Search */}
           <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => void loadPath(currentPath)}
+              disabled={!hasRemoteHost}
+              title={t('sftp.refreshDir')}
+              className="p-1 rounded text-slate-400 hover:text-slate-200 hover:bg-white/10 transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate-400 shrink-0"
+            >
+              <RefreshCw className="w-3.25 h-3.25" />
+            </button>
             <div
               className="flex items-center gap-1.5 px-2 py-1 rounded text-xs border flex-1 min-w-0"
               style={{
@@ -748,14 +756,6 @@ export const SFTPDrawer: React.FC<SFTPDrawerProps> = ({
                 className="w-full bg-transparent border-none outline-none text-xs text-slate-200 placeholder-slate-500"
               />
             </div>
-            <button
-              onClick={() => void loadPath(currentPath)}
-              disabled={!hasRemoteHost}
-              title={t('sftp.refreshDir')}
-              className="p-1 rounded text-slate-400 hover:text-slate-200 hover:bg-white/10 transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-slate-400 shrink-0"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-            </button>
           </div>
         </div>
       )}

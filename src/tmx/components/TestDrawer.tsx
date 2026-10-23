@@ -584,7 +584,7 @@ export const TestDrawer: React.FC<TestDrawerProps> = ({
     >
       {/* Header */}
       <div
-        className="flex items-center justify-between h-10 px-3 shrink-0"
+        className="flex items-center justify-between h-7 pl-3 pr-2.5 shrink-0"
         style={{ backgroundColor: theme.bgCanvas }}
       >
         <div className="flex items-center gap-2">

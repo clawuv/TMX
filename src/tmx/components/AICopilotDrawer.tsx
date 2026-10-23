@@ -94,7 +94,7 @@ export const AICopilotDrawer: React.FC<AICopilotDrawerProps> = ({
     >
       {/* Header (model status moved up here) */}
       <div
-        className="flex items-center justify-between h-7 px-3 shrink-0"
+        className="flex items-center justify-between h-7 pl-3 pr-2 shrink-0"
         style={{
           backgroundColor: theme.bgCanvas,
         }}
